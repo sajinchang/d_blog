@@ -25,8 +25,8 @@ SECRET_KEY = 'hj9mdcbr^zg8m)(bz%)0no_g-9w9dbj8idym$@fhl)jvrsswfh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ('127.0.0.1',)
 
 # Application definition
 
@@ -37,6 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'debug_toolbar',
+    'corsheaders',
+    'mdeditor',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +52,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'd_blog.urls'
@@ -54,7 +62,7 @@ ROOT_URLCONF = 'd_blog.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,8 +83,14 @@ WSGI_APPLICATION = 'd_blog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blog',
+        'HOST': 'localhost',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'PORT': 3306,
     }
 }
 
@@ -103,18 +117,147 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
-
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
+
+# 静态文件迁移目录
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# django访问静态文件目录
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://{}'.format('127.0.0.1:6379'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'CONNECTION_POOL_KWARGS': {'max_connections': 100},
+            # 'PASSWORD': '123456'
+        }
+    }
+}
+
+# 浏览器关闭,session失效
+# SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+# session存储时间
+SESSION_COOKIE_AGE = 60 * 60
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    # 格式配置
+    'formatters': {
+        'simple': {
+            'format': '%(asctime)s %(module)s.%(funcName)s: %(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+        'verbose': {
+            'format': ('%(asctime)s %(levelname)s [%(process)d-%(threadName)s]'
+                       '%(module)s.%(funcName)s line %(lineno)d: %(message)s'),
+            'datefmt': '%Y-%m-%d %H:%M:%S',
+        },
+    },
+    # Handler 配置
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'DEBUG' if DEBUG else 'ERROR'
+        },
+        'info': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': f'log/info.log',
+            'when': 'D',  # 每天切割日志
+            'backupCount': 5,  # 日志保留5天
+            'formatter': 'simple',
+            'level': 'INFO',
+        },
+        'error': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': f'log/error.log',
+            'when': 'W0',
+            'backupCount': 4,
+            'formatter': 'verbose',
+            'level': 'ERROR',
+        },
+        'warning': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': f'log/warning.log',
+            'when': 'D',
+            'backupCount': 15,
+            'formatter': 'verbose',
+            'level': 'WARNING',
+        }
+
+    },
+
+    # LOGGER 配置
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+        },
+
+        'inf': {
+            'handlers': ['info'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'err': {
+            'handlers': ['error'],
+            'propagate': True,
+            'level': 'ERROR',
+        },
+        'war': {
+            'handlers': ['warning'],
+            'propagate': True,
+            'level': 'WARNING'
+        }
+    }
+}
+
+# 跨域
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = ('https://*',)
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+    'VIEW',
+)
+CORS_ALLOW_HEADERS = (
+    'XMLHttpRequest',
+    'X_FILENAME',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)

@@ -13,9 +13,25 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
+
+from django.conf import settings
 from django.conf.urls import url
+from django.conf.urls import include
 from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'mdeditor/', include('mdeditor.urls')),
+    url(r'^media/editor/', include('mdeditor.urls')),
+
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
+
+
+    from django.conf.urls.static import static
+    # 访问media文件
+    urlpatterns += static(settings.MEDIA_URL,
+                          document_root=settings.MEDIA_ROOT)

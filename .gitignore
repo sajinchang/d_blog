@@ -108,4 +108,4 @@ log/
 .vscode/
 media/
 medias/
-
+migrations/
