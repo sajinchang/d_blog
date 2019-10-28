@@ -48,8 +48,8 @@ class ArticleModel(models.Model):
     user = models.ForeignKey(to=User, verbose_name='所属用户')
     category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类')
     tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签')
-    category_sort = models.IntegerField('排序', default=0)
-    category_deleted = models.BooleanField('是否删除',
+    article_sort = models.IntegerField('排序', default=0)
+    article_deleted = models.BooleanField('是否删除',
                                            choices=((True, '删除'), (False, '不删除')), default=False)
     article_content = MDTextField(verbose_name='内容')
     article_views = models.IntegerField('浏览量', default=0)
@@ -65,3 +65,24 @@ class ArticleModel(models.Model):
         verbose_name = '博客'
         verbose_name_plural = verbose_name
         indexes = [models.Index(fields=['article_title'])]
+
+    def tags(self):
+        """
+        获取当前对象的tag
+        """
+        return [obj.tag_title for obj in self.tag.all()]
+
+    def author(self):
+        """
+        获取博客作者
+        """
+        content = '<p style="color: %s">{}{}</p>'.format(self.user.last_name, self.user.first_name)
+        if self.user.is_superuser:
+            return content % 'red'
+        return content % 'green'
+
+    tags.short_description = '标签'
+    tags.allow_tags = True
+
+    author.short_description = '作者'
+    author.allow_tags = True
