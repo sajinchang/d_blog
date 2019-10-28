@@ -102,3 +102,10 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+logs/
+log/
+.idea/
+.vscode/
+media/
+medias/
+
