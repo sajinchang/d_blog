@@ -34,12 +34,6 @@ select sum(like_num)  from
 
 -- 在已爬取的数据中，需要按用户历史微博的总点
 --赞数进行倒序排序，选出前 50 名用户，并显示其昵称、关注数、粉丝数。请你写出对应的 SQL 查询语句。
-select sum(like_num) as t, nickname from 
-    wb_user as A left join wb_info B on A.id=B.user_id 
-    group by nickname 
-    order by t desc 
-    limit 50;  
--- 数据量较大时，请合理地建立索引来优化你在第 2、3 个问题中给出的 SQL 语句查询效率。
  select A.nickname, A.follower_num, A.follow_num, sum(like_num) as t
     from wb_user as A left join wb_info B 
     on A.id=B.user_id 
