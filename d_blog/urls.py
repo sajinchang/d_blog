@@ -20,16 +20,15 @@ from django.conf.urls import include
 from django.contrib import admin
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^user/login/admin/', admin.site.urls),
     url(r'mdeditor/', include('mdeditor.urls')),
-    url(r'^media/editor/', include('mdeditor.urls')),
+    # url(r'^media/editor/', include('mdeditor.urls')),
 
 ]
 
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
-
 
     from django.conf.urls.static import static
     # 访问media文件

@@ -30,10 +30,18 @@ class ArticleAdmin(admin.ModelAdmin):
     search_fields = ['article_title', ]
     list_editable = ['article_sort', 'article_deleted']
     # many to many 后台显示,
-    filter_vertical = ['tag'] 
+    filter_vertical = ['tag']
+
+    def add_view(self, request, form_url='', extra_context=None):
+        print(request.POST)
+
+    # TODO 重写save方法，实现添加博客时自动添加作者，修改时不改变。
+    # 重写get_queryset()方法，实现非高级管理员只可以查询自己所创作的博客
+    # 重写delete方法，实现只修改deleted字段,并非真正的删除博客对象
+    
+
+
+
 
 admin.site.site_header = '博客管理系统'
 admin.site.site_title = '博客'
-# admin.site.register(models.TagModel, TagAdmin)
-# admin.site.register(models.CategoryModel, CategoryAdmin)
-# admin.site.register(models.ArticleModel, ArticleAdmin)
