@@ -31,7 +31,7 @@ INTERNAL_IPS = ('127.0.0.1',)
 # Application definition
 
 INSTALLED_APPS = [
-    # 'simpleui',
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'mdeditor',
+    'stdimage',
+    'xmy',
     'blog',
 ]
 
@@ -263,5 +265,14 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 
-# django-bootstrap-ui settings
-DJANGO_BOOTSTRAP_UI_THEME = 'bootswatch-paper'
+# simpleui隐藏服务器信息    
+SIMPLEUI_HOME_INFO = False
+# 关闭默认图标
+SIMPLEUI_DEFAULT_ICON = False
+# 自定义图标
+# name	模块名字，请注意不是model的命名，而是菜单栏上显示的文本，因为model是可以重复的，会导致无法区分
+# icon	图标
+SIMPLEUI_ICON = {
+    '相册': 'fab fa-apple',
+    '博客管理': 'fas fa-user-tie'
+}

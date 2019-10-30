@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from mdeditor.fields import MDTextField
 
+
 class TagModel(models.Model):
     """
     标签model
@@ -50,7 +51,7 @@ class ArticleModel(models.Model):
     tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签')
     article_sort = models.IntegerField('排序', default=0)
     article_deleted = models.BooleanField('是否删除',
-                                           choices=((True, '删除'), (False, '不删除')), default=False)
+                                          choices=((True, '删除'), (False, '不删除')), default=False)
     article_content = MDTextField(verbose_name='内容')
     article_views = models.IntegerField('浏览量', default=0)
     article_create_at = models.DateTimeField('创建时间', auto_now_add=True)

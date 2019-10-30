@@ -1,0 +1,1 @@
+default_app_config = 'xmy.apps.XmyConfig'
