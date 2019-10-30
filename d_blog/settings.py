@@ -273,6 +273,8 @@ SIMPLEUI_DEFAULT_ICON = False
 # name	模块名字，请注意不是model的命名，而是菜单栏上显示的文本，因为model是可以重复的，会导致无法区分
 # icon	图标
 SIMPLEUI_ICON = {
-    '相册': 'fab fa-apple',
-    '博客管理': 'fas fa-user-tie'
+    '相册': 'fab fa-microsoft',
+    '博客管理': 'fas fa-user-tie',
+    '博客': 'fas fa-book-open'
 }
+# 评论 far fa-comments

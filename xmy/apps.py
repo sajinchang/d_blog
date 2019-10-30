@@ -3,4 +3,4 @@ from django.apps import AppConfig
 
 class XmyConfig(AppConfig):
     name = 'xmy'
-    verbose_name = '相册'
+    verbose_name = '相册管理'
