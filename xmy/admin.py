@@ -1,4 +1,6 @@
 from django.contrib import admin
+from import_export.admin import ImportExportActionModelAdmin
+
 from xmy.models import GalleryModel
 from xmy.models import AlbumModel
 # Register your models here.
@@ -7,8 +9,9 @@ from xmy.models import AlbumModel
 class ImageInline(admin.TabularInline):
     model = AlbumModel
 
+
 @admin.register(GalleryModel)
-class GalleryAdmin(admin.ModelAdmin):
+class GalleryAdmin(ImportExportActionModelAdmin):
     list_display = ['gallery_title', 'image_img',
                     'gallery_create_at', 'gallery_update_at']
     search_fields = ['gallery_title']

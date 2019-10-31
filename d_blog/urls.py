@@ -19,10 +19,12 @@ from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
 
+from views import apis
+
 urlpatterns = [
-    url(r'^user/login/admin/', admin.site.urls),
+    url(r'^user', admin.site.urls),
     url(r'mdeditor/', include('mdeditor.urls')),
-    # url(r'^media/editor/', include('mdeditor.urls')),
+    url(r'^test$', apis.Test.as_view()),
 
 ]
 
