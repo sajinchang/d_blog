@@ -4,12 +4,18 @@ from xmy.models import AlbumModel
 # Register your models here.
 
 
+class ImageInline(admin.TabularInline):
+    model = AlbumModel
+
 @admin.register(GalleryModel)
 class GalleryAdmin(admin.ModelAdmin):
     list_display = ['gallery_title', 'image_img',
                     'gallery_create_at', 'gallery_update_at']
     search_fields = ['gallery_title']
     date_hierarchy = 'gallery_update_at'
+    inlines = [
+        ImageInline
+    ]
 
 
 @admin.register(AlbumModel)

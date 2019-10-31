@@ -7,7 +7,8 @@ class GalleryModel(models.Model):
     """
     相册
     """
-    gallery_title = models.CharField('标题', max_length=128, unique=True)
+    gallery_title = models.CharField('标题', max_length=128, unique=True,
+                                     help_text='相册标题应该是唯一的')
     gallery_img = StdImageField(upload_to='media/', blank=True, null=True,
                                 variations={'thumbnail': (100, 75)},
                                 verbose_name=u'封面图片')
@@ -31,6 +32,7 @@ class GalleryModel(models.Model):
     def __str__(self):
         return self.gallery_title
 
+
 class AlbumModel(models.Model):
     """
     具体相册多图
@@ -38,7 +40,8 @@ class AlbumModel(models.Model):
     album_img = StdImageField(upload_to='media/', null=True, blank=True,
                               variations={'thumbnail': (100, 75)},
                               verbose_name='图片')
-    gallery = models.ForeignKey(GalleryModel, verbose_name='所属相册')
+    gallery = models.ForeignKey(GalleryModel, verbose_name='所属相册', null=True, blank=True,
+                                on_delete=models.SET_NULL)
 
     album_create_at = models.DateTimeField('创建时间', auto_now_add=True)
     album_update_at = models.DateTimeField('更新时间', auto_now=True)

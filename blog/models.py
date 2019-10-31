@@ -47,7 +47,8 @@ class ArticleModel(models.Model):
     """
     article_title = models.CharField('博客标题', max_length=128, unique=True)
     user = models.ForeignKey(to=User, verbose_name='所属用户')
-    category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类')
+    category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类',
+                                 null=True, blank=True, on_delete=models.SET_NULL)
     tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签')
     article_sort = models.IntegerField('排序', default=0)
     article_deleted = models.BooleanField('是否删除',
@@ -77,7 +78,8 @@ class ArticleModel(models.Model):
         """
         获取博客作者
         """
-        content = '<p style="color: %s">{}{}</p>'.format(self.user.last_name, self.user.first_name)
+        content = '<p style="color: %s">{}{}</p>'.format(
+            self.user.last_name, self.user.first_name)
         if self.user.is_superuser:
             return content % 'red'
         return content % 'green'

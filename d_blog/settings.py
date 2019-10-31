@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'corsheaders',
     'mdeditor',
+    'import_export',
     'stdimage',
     'xmy',
     'blog',
@@ -79,7 +80,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'd_blog.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -265,6 +265,7 @@ CORS_ALLOW_HEADERS = (
     'x-requested-with',
 )
 
+# simpleui 配置
 # simpleui隐藏服务器信息    
 SIMPLEUI_HOME_INFO = False
 # 关闭默认图标
@@ -273,8 +274,34 @@ SIMPLEUI_DEFAULT_ICON = False
 # name	模块名字，请注意不是model的命名，而是菜单栏上显示的文本，因为model是可以重复的，会导致无法区分
 # icon	图标
 SIMPLEUI_ICON = {
-    '相册': 'fab fa-microsoft',
+    '相册': 'fa fa-list-ol',
     '博客管理': 'fas fa-user-tie',
-    '博客': 'fas fa-book-open'
+    '博客': 'fas fa-book-open',
+    '相册管理': 'fa fa-archive'
+}
+# 首页配置
+# SIMPLEUI_HOME_PAGE = 'https://www.baidu.com'
+# 首页标题
+SIMPLE_HOME_TITLE = 'SamSa'
+# # 首页图标,支持element-ui的图标和fontawesome的图标
+SIMPLEUI_HOME_ICON = 'el-icon-date'
+
+# 首页显示最近动作
+# SIMPLEUI_HOME_ACTION = False
+# 首页显示快速操作
+# SIMPLEUI_HOME_QUICK = False
+# 自定义SIMPLEUI的Logo
+# SIMPLEUI_LOGO = 'https://avatars2.githubusercontent.com/u/13655483?s=60&v=4'
+SIMPLEUI_LOGO = ''
+# 登录页粒子动画，默认开启，False关闭
+# SIMPLEUI_LOGIN_PARTICLES = False
+# 让simpleui 不要收集相关信息
+SIMPLEUI_ANALYSIS = True
+# simpleui 自定义菜单
+SIMPLEUI_CONFIG = {
+
 }
 # 评论 far fa-comments
+# 指定simpleui 是否以脱机模式加载静态资源，为True的时候将默认从本地读取所有资源，即使没有联网一样可以。适合内网项目
+# 不填该项或者为False的时候，默认从第三方的cdn获取
+SIMPLEUI_STATIC_OFFLINE = True

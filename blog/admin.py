@@ -1,6 +1,8 @@
 import logging
 from django.contrib import admin
-
+from import_export.admin import ImportExportModelAdmin
+from import_export.admin import ImportExportActionModelAdmin
+from import_export import resources
 # Register your models here.
 from blog import models
 from libs import admin_action
@@ -19,10 +21,15 @@ class CategoryAdmin(admin.ModelAdmin):
                     'category_create_at', 'category_update_at']
 
 
+class ProxyResource(resources.ModelResource):
+    class Meta:
+        model = models.ArticleModel
+
 @admin.register(models.ArticleModel)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(ImportExportActionModelAdmin):
+    resources_class = ProxyResource
     list_display = ['article_title', 'author', 'tags', 'category', 'article_deleted', 'article_sort',
-                    'article_views', 'article_create_at', 'article_update_at']
+                    'article_views', 'article_create_at', 'article_update_at', 'get_status']
 
     readonly_fields = ['article_views', 'user']
     # # 详细时间分层筛选　
@@ -95,6 +102,11 @@ class ArticleAdmin(admin.ModelAdmin):
             del actions['delete_selected']
         return actions
 
+    def get_status(self, obj):
+        if obj.article_deleted is True:
+            return '<b style="color: red">已删除</b>'
+        else:
+            return '<b style="color: green">未删除</b>'
 
 admin.site.site_header = '博客管理系统'
 admin.site.site_title = '博客'
