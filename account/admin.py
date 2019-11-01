@@ -1,9 +1,12 @@
+from django.contrib.admin.models import LogEntry
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AdminPasswordChangeForm
 from django.contrib.auth.forms import PasswordChangeForm
+# from django.contrib.contenttypes.models import ContentType
+# from django.utils.encoding import force_unicode
 
 from .models import UserModel as MyUser
 
@@ -98,7 +101,8 @@ class MyUserAdmin(UserAdmin):
     list_filter = ('is_admin',)
     readonly_fields = ('is_superuser', 'password', 'last_login')
     fieldsets = (
-        (None, {'fields': ('username', 'nickname', 'email', 'password', 'last_login')}),
+        (None, {'fields': ('username', 'nickname',
+                           'email', 'password', 'last_login')}),
 
         ('权限',
          {'fields': ('is_superuser', ('is_admin', 'is_active'), 'user_permissions')}),
@@ -115,6 +119,56 @@ class MyUserAdmin(UserAdmin):
     ordering = ('email', 'username')
     filter_horizontal = ('user_permissions',)
 
+
+# # 文件最下方增加
+# @admin.register(LogEntry)
+# class LogEntryAdmin(admin.ModelAdmin):
+#     list_display = ['object_repr',
+#                     'action_flag', 'user', 'change_message']
+#
+#     def log_addition(self, request, object):
+#         """
+#         Log that an object has been successfully added.
+#         The default implementation creates an admin LogEntry object.
+#         """
+#         from django.contrib.admin.models import LogEntry, ADDITION
+#         LogEntry.objects.log_action(
+#             user_id=request.user.pk,
+#             content_type_id=ContentType.objects.get_for_model(object).pk,
+#             object_id=object.pk,
+#             object_repr=force_unicode(object),
+#             action_flag=ADDITION
+#         )
+#
+#     def log_change(self, request, object, message):
+#         """
+#         Log that an object has been successfully changed.
+#         The default implementation creates an admin LogEntry object.
+#         """
+#         from django.contrib.admin.models import LogEntry, CHANGE
+#         LogEntry.objects.log_action(
+#             user_id=request.user.pk,
+#             content_type_id=ContentType.objects.get_for_model(object).pk,
+#             object_id=object.pk,
+#             object_repr=force_unicode(object),
+#             action_flag=CHANGE,
+#             change_message=message
+#         )
+#
+#     def log_deletion(self, request, object, object_repr):
+#         """
+#         Log that an object will be deleted. Note that this method is called
+#         before the deletion.
+#         The default implementation creates an admin LogEntry object.
+#         """
+#         from django.contrib.admin.models import LogEntry, DELETION
+#         LogEntry.objects.log_action(
+#             user_id=request.user.id,
+#             content_type_id=ContentType.objects.get_for_model(self.model).pk,
+#             object_id=object.pk,
+#             object_repr=object_repr,
+#             action_flag=DELETION
+#         )
 
 admin.site.register(MyUser, MyUserAdmin)
 admin.site.unregister(Group)
