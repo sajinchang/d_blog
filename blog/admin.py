@@ -1,8 +1,9 @@
 import logging
+
 from django.contrib import admin
-from import_export.admin import ImportExportModelAdmin
-from import_export.admin import ImportExportActionModelAdmin
 from import_export import resources
+from import_export.admin import ImportExportActionModelAdmin
+
 # Register your models here.
 from blog import models
 from libs import admin_action
@@ -24,6 +25,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class ProxyResource(resources.ModelResource):
     class Meta:
         model = models.ArticleModel
+
 
 @admin.register(models.ArticleModel)
 class ArticleAdmin(ImportExportActionModelAdmin):
@@ -62,7 +64,8 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         }),
     )
     # 添加自定义选中动作
-    actions = [admin_action.export_as_json, admin_action.delete_selected_queryset]
+    actions = [admin_action.export_as_json,
+               admin_action.delete_selected_queryset]
 
     def get_queryset(self, request):
         """
@@ -85,11 +88,8 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         """
         删除model
         """
-
         obj.article_deleted = True
         obj.save()
-
-        # def delete_selectd(self, request, ):
 
     def get_actions(self, request):
         """
@@ -98,15 +98,20 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         :return:
         """
         actions = super(ArticleAdmin, self).get_actions(request)
-        if 'delete_selected' in actions:
-            del actions['delete_selected']
+        if not request.user.is_superuser:
+            if 'delete_selected' in actions:
+                actions.pop('delete_selected')
         return actions
 
     def get_status(self, obj):
         if obj.article_deleted is True:
-            return '<b style="color: red">已删除</b>'
+            return '<b style="color: red">不显示</b>'
         else:
-            return '<b style="color: green">未删除</b>'
+            return '<b style="color: green">显示</b>'
+
+    get_status.short_description = '当前状态'
+    get_status.allow_tags = True
+
 
 admin.site.site_header = '博客管理系统'
 admin.site.site_title = '博客'

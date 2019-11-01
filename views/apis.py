@@ -12,5 +12,5 @@ class Test(BaseView):
         测试
         """
         res = {'test': 'this is a test'}
-        return render_json(data=[])
-        # return render(request, 'show/base.html')
+        # return render_json(data=[])
+        return render(request, 'show/base.html')

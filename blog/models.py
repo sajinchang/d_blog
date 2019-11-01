@@ -1,7 +1,5 @@
+from django.conf import settings
 from django.db import models
-
-# Create your models here.
-from django.contrib.auth.models import User
 from mdeditor.fields import MDTextField
 
 
@@ -46,7 +44,7 @@ class ArticleModel(models.Model):
     文章model
     """
     article_title = models.CharField('博客标题', max_length=128, unique=True)
-    user = models.ForeignKey(to=User, verbose_name='所属用户')
+    user = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='所属用户')
     category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类',
                                  null=True, blank=True, on_delete=models.SET_NULL)
     tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签')

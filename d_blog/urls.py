@@ -22,7 +22,7 @@ from django.contrib import admin
 from views import apis
 
 urlpatterns = [
-    url(r'^user', admin.site.urls),
+    url(r'^admin/', admin.site.urls),
     url(r'mdeditor/', include('mdeditor.urls')),
     url(r'^test$', apis.Test.as_view()),
 

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'stdimage',
     'xmy',
     'blog',
+    'account',
 ]
 
 MIDDLEWARE = [
@@ -62,7 +63,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'd_blog.urls'
-
+AUTH_USER_MODEL = 'account.UserModel'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -292,15 +293,15 @@ SIMPLEUI_HOME_ICON = 'el-icon-date'
 # SIMPLEUI_HOME_QUICK = False
 # 自定义SIMPLEUI的Logo
 # SIMPLEUI_LOGO = 'https://avatars2.githubusercontent.com/u/13655483?s=60&v=4'
-SIMPLEUI_LOGO = ''
+# SIMPLEUI_LOGO = ''
 # 登录页粒子动画，默认开启，False关闭
 # SIMPLEUI_LOGIN_PARTICLES = False
 # 让simpleui 不要收集相关信息
 SIMPLEUI_ANALYSIS = True
 # simpleui 自定义菜单
-SIMPLEUI_CONFIG = {
-
-}
+# SIMPLEUI_CONFIG = {
+# 
+# }
 # 评论 far fa-comments
 # 指定simpleui 是否以脱机模式加载静态资源，为True的时候将默认从本地读取所有资源，即使没有联网一样可以。适合内网项目
 # 不填该项或者为False的时候，默认从第三方的cdn获取
