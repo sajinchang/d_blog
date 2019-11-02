@@ -20,19 +20,29 @@ from django.conf.urls import include
 from django.contrib import admin
 
 from views import apis
+from views import handler_error
+from xmy import views as gallery_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'mdeditor/', include('mdeditor.urls')),
-    url(r'^test$', apis.Test.as_view()),
+    url(r'^test/$', apis.Test.as_view()),
+
+    url(r'^$', apis.Index.as_view(), name='index'),
+    url(r'^gallery/', include('xmy.urls', namespace='gallery')),
+    url(r'^gallery/list/$', gallery_view.GalleryView.as_view(), name='gallery')
 
 ]
+handler404 = handler_error.page_not_found
+handler500 = handler_error.server_error
 
 if settings.DEBUG:
     import debug_toolbar
+
     urlpatterns += [url(r'^__debug__/', include(debug_toolbar.urls))]
 
     from django.conf.urls.static import static
+
     # 访问media文件
     urlpatterns += static(settings.MEDIA_URL,
                           document_root=settings.MEDIA_ROOT)

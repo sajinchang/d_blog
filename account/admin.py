@@ -4,39 +4,12 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField, AdminPasswordChangeForm
-from django.contrib.auth.forms import PasswordChangeForm
-# from django.contrib.contenttypes.models import ContentType
-# from django.utils.encoding import force_unicode
+from django.contrib.admin.models import LogEntry, DELETION
+from django.urls import get_urlconf
+from django.utils.html import escape
+from django.core.urlresolvers import reverse
 
 from .models import UserModel as MyUser
-
-
-# class PwdChangeForm(forms.Form):
-#     old_password = forms.CharField(label='Old Password', widget=forms.PasswordInput)
-#
-#     password1 = forms.CharField(label='New Password', widget=forms.PasswordInput)
-#     password2 = forms.CharField(label='Password Confirmation', widget=forms.PasswordInput)
-#
-#     # use clean methods to define custom validation rules
-#
-#     def clean_password1(self):
-#         password1 = self.cleaned_data.get('password1')
-#
-#         if len(password1) < 6:
-#             raise forms.ValidationError("your password is too short")
-#         elif len(password1) > 20:
-#             raise forms.ValidationError("your password is too long")
-#
-#         return password1
-#
-#     def clean_password2(self):
-#         password1 = self.cleaned_data.get('password1')
-#         password2 = self.cleaned_data.get('password2')
-#
-#         if password1 and password2 and password1 != password2:
-#             raise forms.ValidationError("Password mismatch Please enter again")
-#
-#         return password2
 
 
 class UserCreationForm(forms.ModelForm):
@@ -73,7 +46,7 @@ class UserChangeForm(forms.ModelForm):
     password hash display field.
     """
 
-    # password = ReadOnlyPasswordHashField()
+    password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = MyUser
@@ -86,6 +59,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+@admin.register(MyUser)
 class MyUserAdmin(UserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
@@ -120,55 +94,77 @@ class MyUserAdmin(UserAdmin):
     filter_horizontal = ('user_permissions',)
 
 
-# # 文件最下方增加
-# @admin.register(LogEntry)
-# class LogEntryAdmin(admin.ModelAdmin):
-#     list_display = ['object_repr',
-#                     'action_flag', 'user', 'change_message']
-#
-#     def log_addition(self, request, object):
-#         """
-#         Log that an object has been successfully added.
-#         The default implementation creates an admin LogEntry object.
-#         """
-#         from django.contrib.admin.models import LogEntry, ADDITION
-#         LogEntry.objects.log_action(
-#             user_id=request.user.pk,
-#             content_type_id=ContentType.objects.get_for_model(object).pk,
-#             object_id=object.pk,
-#             object_repr=force_unicode(object),
-#             action_flag=ADDITION
-#         )
-#
-#     def log_change(self, request, object, message):
-#         """
-#         Log that an object has been successfully changed.
-#         The default implementation creates an admin LogEntry object.
-#         """
-#         from django.contrib.admin.models import LogEntry, CHANGE
-#         LogEntry.objects.log_action(
-#             user_id=request.user.pk,
-#             content_type_id=ContentType.objects.get_for_model(object).pk,
-#             object_id=object.pk,
-#             object_repr=force_unicode(object),
-#             action_flag=CHANGE,
-#             change_message=message
-#         )
-#
-#     def log_deletion(self, request, object, object_repr):
-#         """
-#         Log that an object will be deleted. Note that this method is called
-#         before the deletion.
-#         The default implementation creates an admin LogEntry object.
-#         """
-#         from django.contrib.admin.models import LogEntry, DELETION
-#         LogEntry.objects.log_action(
-#             user_id=request.user.id,
-#             content_type_id=ContentType.objects.get_for_model(self.model).pk,
-#             object_id=object.pk,
-#             object_repr=object_repr,
-#             action_flag=DELETION
-#         )
+@admin.register(LogEntry)
+class LogEntryAdmin(admin.ModelAdmin):
+    date_hierarchy = 'action_time'
 
-admin.site.register(MyUser, MyUserAdmin)
+    readonly_fields = [field.attname for field in LogEntry._meta.fields]
+    readonly_fields += ['content_type', 'user']
+
+    list_filter = ['user', 'content_type', 'action_flag']
+
+    search_fields = ['object_repr', 'change_message']
+
+    list_display = ['action_time', 'user', 'content_type', 'object_link',
+                    'action_flag', 'change_message', '__str__']
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return True
+        # return request.user.is_superuser and request.method != 'POST'
+
+    def has_module_permission(self, request):
+        return True
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+        # if request.user.is_superuser:
+        #     return True
+        # return super().has_delete_permission(request, obj)
+
+    def object_link(self, obj):
+        """
+        对应所操作对象的链接
+        :param obj:
+        :return:
+        """
+        if obj.action_flag == DELETION:
+            link = escape(obj.object_repr)
+        else:
+            ct = obj.content_type
+            link = u'<a href="%s">%s</a>' % (reverse('admin:%s_%s_change' % (ct.app_label, ct.model),
+                                                     args=[obj.object_id]), escape(obj.object_repr),)
+        return link
+
+    object_link.allow_tags = True
+    object_link.admin_order_field = 'object_repr'
+    object_link.short_description = u'所操作对象'
+
+    def queryset(self, request):
+        """
+        1. 因为select_related()总是在单次SQL查询中解决问题，而prefetch_related()会对每个相关表进行SQL查询，
+        因此select_related()的效率通常比后者高。
+        2. 鉴于第一条，尽可能的用select_related()解决问题。只有在select_related()不能解决问题的时候再去想
+        prefetch_related()。
+        3. 你可以在一个QuerySet中同时使用select_related()和prefetch_related()，从而减少SQL查询的次数。
+        4. 只有prefetch_related()之前的select_related()是有效的，之后的将会被无视掉。
+        :param request:
+        :return:
+        """
+        return super(LogEntryAdmin, self).queryset(request).prefetch_related('content_type')
+
+    def get_actions(self, request):
+        """
+        去除默认的delete_selected action
+        :param request:
+        :return:
+        """
+        actions = super().get_actions(request)
+        if 'delete_selected' in actions:
+            actions.pop('delete_selected')
+        return actions
+
+
 admin.site.unregister(Group)

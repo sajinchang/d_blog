@@ -2,6 +2,7 @@ from django.db import models
 from stdimage import StdImageField
 
 # Create your models here.
+from libs.utils import upload_dir
 
 
 class GalleryModel(models.Model):
@@ -10,12 +11,13 @@ class GalleryModel(models.Model):
     """
     gallery_title = models.CharField('标题', max_length=128, unique=True,
                                      help_text='相册标题应该是唯一的')
-    gallery_img = StdImageField(upload_to='media/', blank=True, null=True,
+    gallery_img = StdImageField(upload_to=upload_dir, blank=True, null=True,
                                 variations={'thumbnail': (100, 75)},
                                 verbose_name=u'封面图片')
     gallery_comment = models.TextField('简介说明', null=True, blank=True)
-    gallery_deleted = models.BooleanField('是否逻辑删除', 
-                                       choices=((True, '删除'), (False, '未删除')), default=False)
+    gallery_deleted = models.BooleanField('是否逻辑删除',
+                                          choices=((True, '删除'), (False, '未删除')),
+                                          default=False)
     gallery_create_at = models.DateTimeField('创建时间', auto_now_add=True)
     gallery_update_at = models.DateTimeField('更新时间', auto_now=True)
 
@@ -23,6 +25,7 @@ class GalleryModel(models.Model):
         db_table = 'tbl_gallery'
         verbose_name = '相册'
         verbose_name_plural = verbose_name
+        ordering = ['id']
 
     def image_img(self):
         if hasattr(self.gallery_img, 'thumbnail'):
@@ -40,14 +43,14 @@ class AlbumModel(models.Model):
     """
     具体相册多图
     """
-    album_img = StdImageField(upload_to='media/', null=True, blank=True,
+    album_img = StdImageField(upload_to=upload_dir, null=True, blank=True,
                               variations={'thumbnail': (100, 75)},
                               verbose_name='图片')
     gallery = models.ForeignKey(GalleryModel, verbose_name='所属相册', null=True, blank=True,
-                                on_delete=models.SET_NULL)
+                                on_delete=models.SET_NULL, related_name='gallery')
 
-    album_deleted = models.BooleanField('是否逻辑删除', 
-                                       choices=((True, '删除'), (False, '未删除')), default=False)
+    album_deleted = models.BooleanField('是否逻辑删除',
+                                        choices=((True, '删除'), (False, '未删除')), default=False)
     album_create_at = models.DateTimeField('创建时间', auto_now_add=True)
     album_update_at = models.DateTimeField('更新时间', auto_now=True)
 

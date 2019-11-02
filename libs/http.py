@@ -1,7 +1,5 @@
 # -*- coding=utf8 -*-
 # @Author: SamSa
-
-from django.conf import settings
 from django.http import JsonResponse
 
 
@@ -18,4 +16,4 @@ def render_json(code=0, count=0, data=None, msg=''):
         'count': count,
         'data': data
     }
-    return JsonResponse(result, safe=True)
+    return JsonResponse(result, safe=False, )

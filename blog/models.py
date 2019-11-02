@@ -76,8 +76,7 @@ class ArticleModel(models.Model):
         """
         获取博客作者
         """
-        content = '<p style="color: %s">{}{}</p>'.format(
-            self.user.last_name, self.user.first_name)
+        content = '<p style="color: %s">{}</p>'.format(self.user.nickname)
         if self.user.is_superuser:
             return content % 'red'
         return content % 'green'

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-PROJECT_DIR='/apps/svr/project/code/HenKe/henke
-'
+PROJECT_DIR='/apps/svr/project/code/HenKe/henke'
 
+# shellcheck disable=SC2164
 cd $PROJECT_DIR
 
 ENV='/apps/svr/project/code/HenKe/python3.6/bin/python3'

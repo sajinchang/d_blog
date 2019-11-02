@@ -24,6 +24,7 @@ SECRET_KEY = 'hj9mdcbr^zg8m)(bz%)0no_g-9w9dbj8idym$@fhl)jvrsswfh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+# DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 INTERNAL_IPS = ('127.0.0.1',)
@@ -143,8 +144,8 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/upload')
+MEDIA_URL = '/upload/'
 
 
 CACHES = {
@@ -278,7 +279,8 @@ SIMPLEUI_ICON = {
     '相册': 'fa fa-list-ol',
     '博客管理': 'fas fa-user-tie',
     '博客': 'fas fa-book-open',
-    '相册管理': 'fa fa-archive'
+    '相册管理': 'fa fa-archive',
+    '管理': 'fa fa-align-justify'
 }
 # 首页配置
 # SIMPLEUI_HOME_PAGE = 'https://www.baidu.com'

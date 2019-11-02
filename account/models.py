@@ -1,10 +1,11 @@
 from abc import ABC
 
+from django.contrib.admin.models import LogEntry
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, \
     PermissionsMixin
-
+from django.urls import reverse, get_urlconf
 from django.contrib.auth.decorators import login_required
 from django.utils.safestring import mark_safe
 
@@ -41,7 +42,7 @@ class UserManager(BaseUserManager):
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
     password = models.CharField('密码', max_length=128,
-                                help_text=mark_safe('<a href="/test">修改密码</a>'))
+                                help_text=mark_safe('<a href="../password">修改密码</a>'))
     # is_staff = models.BooleanField('是否有权限访问后台', default=True)
     nickname = models.CharField('昵称', max_length=128)
     username = models.CharField('用户名', max_length=128, unique=True)

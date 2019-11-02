@@ -7,4 +7,5 @@ PIDFILE='/app/d_blog/logs/gunicorn.pid'
 #$PORJECT_DIR/scripts/start.sh
 
 # 平滑重启
+# shellcheck disable=SC2046
 kill -HUP `cat $PIDFILE`

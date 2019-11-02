@@ -5,6 +5,7 @@ PROJECT_DIR='/home/sam/work/yishan'
 #ENV='/apps/svr/project/code/HenKe/python3.6/bin/python3'
 ENV='/home/sam/.env/python3.6/bin/python3'
 
+# shellcheck disable=SC2164
 cd $PROJECT_DIR
 
 $ENV manage.py runserver 0.0.0.0:8000
