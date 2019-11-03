@@ -34,7 +34,8 @@ class GalleryShowView(view.BaseView):
         :param pk:
         :return:
         """
-        obj = GalleryModel.objects.get(pk=1)
+        obj = GalleryModel.objects.get(pk=pk)
         data = GallerySerialize(instance=obj, many=False).data
-        render(request, 'show/infopic.html', context=data)
+        return render(request, 'show/infopic.html', context=data)
         # return render_json(data=data)
+

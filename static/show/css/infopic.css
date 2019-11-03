@@ -27,7 +27,7 @@
 #preArrow_A { left: 0px; background: url('../images/left.png') 0px 0px no-repeat; display: none; }
 #nextArrow_A { right: 0px; background: url('../images/right.png') 0px 0px no-repeat; display: none; }
 .picshowtxt { min-height: 40px; _height: 40px; }
-.picshowtxt_left { float: left; width: 50px; height: 50px; line-height: 50px; font-family: Georgia, "Times New Roman", Times, serif; }
+.picshowtxt_left { margin-right: 10px;float: left; width: 50px; height: 50px; line-height: 50px; font-family: Georgia, "Times New Roman", Times, serif; }
 .picshowtxt_left span { color: #e55656; font-size: 30px; }
 .picshowtxt_left i { color: #666666; font-size: 20px; }
 .picshowtxt_right { color: #666666; font-size: 14px; padding-top: 14px }

@@ -1,6 +1,11 @@
 {% extends 'show/base_index.html' %}
 {% load static %}
 
+{% block css %}
+
+    <link href="{% static 'show/css/infopic.css' %}" rel="stylesheet">
+    <link href="{% static 'show/css/m.css' %}" rel="stylesheet">
+{% endblock %}
 {% block r_box %}
     <div class="r_box">
         <li><i><a href="/"><img src="../../static/show/images/1.jpg"></a></i>

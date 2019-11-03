@@ -38,6 +38,16 @@ class GalleryModel(models.Model):
     def __str__(self):
         return self.gallery_title
 
+    @property
+    def albums(self):
+        """
+        获取相册
+        :return:
+        """
+        if not hasattr(self, '_albums'):
+            self._albums = AlbumModel.objects.filter(gallery=self, album_deleted=False)
+        return self._albums
+
 
 class AlbumModel(models.Model):
     """

@@ -56,6 +56,7 @@ class AlbumAdmin(admin.ModelAdmin):
 
     search_fields = ['gallery__gallery_title']
     list_editable = ['album_deleted']
+    list_filter = ('album_deleted', )
 
     def delete_model(self, request, obj):
         """

@@ -1,16 +1,26 @@
 {% extends 'show/base.html' %}
 {% load static %}
+{% block css %}
+
+    <link href="{% static 'show/css/m.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js-header %}
+
+    <script src="{% static 'show/js/scrollReveal.js' %}"></script>
+{% endblock %}
 {% block content %}
     <article>
         <div class="picbox">
             {% for foo in data %}
                 <ul>
                     {% for obj in foo %}
-                        <li data-scroll-reveal="enter bottom over 1s"><a href="/"><i><img
+                        <li data-scroll-reveal="enter bottom over 1s"><a href="{% url 'gallery:gallery_show' obj.id %}"><i><img
                                 src="{{ obj.gallery_img }}" alt="{{ obj.gallery_title }}"></i>
                             <div class="picinfo">
                                 <h3>{{ obj.gallery_title }}</h3>
-                                <span>{{ obj.gallery_comment }}</span>
+                                <span>{{ obj.gallery_comment_short }}
+                                </span>
+                                {#                                <span>好咖啡要和朋友一起品尝，好“模板”也要和同样喜欢它的人一起分享。</span>#}
                             </div>
                         </a></li>
                     {% endfor %}
@@ -40,3 +50,4 @@
     </article>
 
 {% endblock %}
+
