@@ -41,6 +41,18 @@ class UserManager(BaseUserManager):
 
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
+    """
+    重写django auth user,
+
+    is_active
+    必须定义。 一个布尔属性，标识用户是否是 "active" 的。AbstractBaseUser默认为 Ture。
+
+    get_full_name()
+    必须定义。 long格式的用户标识。
+
+    get_short_name()
+    必须定义。 short格式的用户标识。
+    """
     password = models.CharField('密码', max_length=128,
                                 help_text=mark_safe('<a href="../password">修改密码</a>'))
     # is_staff = models.BooleanField('是否有权限访问后台', default=True)
@@ -55,6 +67,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
     # identifier = models.CharField(max_length=40, unique=True)
     # REQUIRED_FIELDS = ['username', 'password']
+
+    # 必须设置, 认证表示, 设置该字段必须为unique=True
     USERNAME_FIELD = 'username'
 
     objects = UserManager()

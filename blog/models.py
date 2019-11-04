@@ -1,6 +1,12 @@
 from django.conf import settings
 from django.db import models
+from django.db.models import QuerySet
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from mdeditor.fields import MDTextField
+from stdimage import StdImageField
+
+from libs.utils import upload_dir
 
 
 class TagModel(models.Model):
@@ -39,6 +45,18 @@ class CategoryModel(models.Model):
         verbose_name_plural = verbose_name
 
 
+class ArticleManager(models.Manager):
+    """
+    重写ArticleModel的模型管理器, 每一次浏览对浏览量加1
+    """
+
+    def get(self, *args, **kwargs):
+        obj = super().get(*args, **kwargs)
+        obj.article_views += 1
+        obj.save()
+        return obj
+
+
 class ArticleModel(models.Model):
     """
     文章model
@@ -46,15 +64,24 @@ class ArticleModel(models.Model):
     article_title = models.CharField('博客标题', max_length=128, unique=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='所属用户')
     category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类',
-                                 null=True, blank=True, on_delete=models.SET_NULL)
-    tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签')
+                                 null=True, blank=True,
+                                 related_name='category',
+                                 on_delete=models.SET_NULL)
+    tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签', related_name='tag')
     article_sort = models.IntegerField('排序', default=0)
     article_deleted = models.BooleanField('是否删除',
-                                          choices=((True, '删除'), (False, '不删除')), default=False)
-    article_content = MDTextField(verbose_name='内容')
+                                          choices=((True, '删除'), (False, '不删除')),
+                                          default=False)
+    article_img = StdImageField('封面图片', upload_to=upload_dir,
+                                variations={'thumbnail': (100, 75)},
+                                blank=True, null=True)
+    article_commend = models.TextField('简介', null=True, blank=True)
+    article_content = MDTextField(verbose_name='内容', null=True, blank=True)
     article_views = models.IntegerField('浏览量', default=0)
     article_create_at = models.DateTimeField('创建时间', auto_now_add=True)
     article_update_at = models.DateTimeField('更新时间', auto_now=True)
+
+    objects = ArticleManager()
 
     def __str__(self):
         return self.article_title
@@ -63,6 +90,7 @@ class ArticleModel(models.Model):
         db_table = 'tbl_article'
         get_latest_by = 'create_at'
         verbose_name = '博客'
+        ordering = ['article_views']
         verbose_name_plural = verbose_name
         indexes = [models.Index(fields=['article_title'])]
 
@@ -70,7 +98,17 @@ class ArticleModel(models.Model):
         """
         获取当前对象的tag
         """
-        return [obj.tag_title for obj in self.tag.all()]
+        if not hasattr(self, '_tags'):
+            self._tags = [obj.tag_title for obj in self.tag.all()]
+
+        return self._tags
+
+    @property
+    def get_tags(self):
+        if not hasattr(self, '_get_tags'):
+            self._get_tags = self.tag.all()
+
+        return self._get_tags
 
     def author(self):
         """
@@ -86,3 +124,16 @@ class ArticleModel(models.Model):
 
     author.short_description = '作者'
     author.allow_tags = True
+
+    def img(self):
+        if hasattr(self.article_img, 'thumbnail'):
+            return u'<img src="%s" />' % (self.article_img.thumbnail.url)
+        return '上传图片'
+
+    img.short_description = '封面图片'
+    img.allow_tags = True
+
+
+@receiver([pre_delete], sender=ArticleModel)
+def delete_article_img(sender, instance, **kwargs):
+    instance.article_img.delete(False)

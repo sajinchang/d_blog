@@ -1,10 +1,13 @@
 import logging
 
+from django.db import models as d_models
 from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
 
 # Register your models here.
+from mdeditor.widgets import MDEditorWidget
+
 from blog import models
 from libs import admin_action
 
@@ -30,7 +33,7 @@ class ProxyResource(resources.ModelResource):
 @admin.register(models.ArticleModel)
 class ArticleAdmin(ImportExportActionModelAdmin):
     resources_class = ProxyResource
-    list_display = ['article_title', 'author', 'tags', 'category', 'article_deleted', 'article_sort',
+    list_display = ['article_title', 'author', 'img', 'tags', 'category', 'article_deleted', 'article_sort',
                     'article_views', 'article_create_at', 'article_update_at', 'get_status']
 
     readonly_fields = ['article_views', 'user']
@@ -50,11 +53,16 @@ class ArticleAdmin(ImportExportActionModelAdmin):
     # 每页数量
     list_per_page = 50
 
+    # 将textfield变为markdown
+    # formfield_overrides = {
+    #     d_models.TextField: {'widget': MDEditorWidget}
+    # }
     # 详情页显示
     fieldsets = (
         ('基本信息', {
             'fields': ('article_title', ('category', 'tag'),
                        ('article_sort', 'article_deleted'),
+                       'article_img', 'article_commend',
                        'article_content')
         }),
         ('其他', {

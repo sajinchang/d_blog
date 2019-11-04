@@ -30,7 +30,9 @@ urlpatterns = [
 
     url(r'^$', apis.Index.as_view(), name='index'),
     url(r'^gallery/', include('xmy.urls', namespace='gallery')),
-    url(r'^gallery/list/$', gallery_view.GalleryView.as_view(), name='gallery')
+    url(r'^gallery/list/$', gallery_view.GalleryView.as_view(), name='gallery'),
+
+    url(r'^blog/', include('blog.urls', namespace='blog')),
 
 ]
 handler404 = handler_error.page_not_found

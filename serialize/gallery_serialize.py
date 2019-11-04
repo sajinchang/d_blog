@@ -2,7 +2,7 @@
 # @Author  : SamSa
 from rest_framework import serializers
 
-from xmy import models as Gallery
+from xmy import models
 
 
 class AlbumSerialize(serializers.ModelSerializer):
@@ -10,7 +10,7 @@ class AlbumSerialize(serializers.ModelSerializer):
     album_update_at = serializers.DateTimeField('%Y-%m-%d %H:%M:%S')
 
     class Meta:
-        model = Gallery.AlbumModel
+        model = models.AlbumModel
         fields = '__all__'
 
 
@@ -47,6 +47,6 @@ class GallerySerialize(serializers.ModelSerializer):
         return obj.gallery_comment[:30]
 
     class Meta:
-        model = Gallery.GalleryModel
+        model = models.GalleryModel
         fields = '__all__'
         depth = 2

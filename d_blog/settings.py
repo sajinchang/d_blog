@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'mdeditor',
     'import_export',
     'stdimage',
+
     'xmy',
     'blog',
     'account',
@@ -145,13 +146,13 @@ STATICFILES_DIRS = [
 STATIC_URL = '/static/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/upload')
-MEDIA_URL = '/upload/'
+MEDIA_URL = '/media/upload/'
 
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://{}'.format('127.0.0.1:6379'),
+        'LOCATION': 'redis://{}:{}/{}'.format('127.0.0.1', '6379', '1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {'max_connections': 100},

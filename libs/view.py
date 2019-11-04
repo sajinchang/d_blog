@@ -9,6 +9,7 @@ class BaseView(APIView):
     """
     rest_framework view, 重写dispatch方法, 进行csrf验证
     """
+
     @csrf_exempt
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)

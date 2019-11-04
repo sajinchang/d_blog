@@ -24,7 +24,7 @@ def upload_dir(instance, file):
 
 def query_page(pre_page, current_page=1, pages=None, queryset=None, serialize=None):
     """
-
+    queryset 对象分页
     :param pre_page: 每页显示数据
     :param current_page: 当前页码
     :param pages: 前端显示的页码list
@@ -93,6 +93,5 @@ def split_list_n_list(origin, n):
         cnt = len(origin) // n
     else:
         cnt = len(origin) // n + 1
-
     for i in range(n):
         yield origin[i * cnt:(i + 1) * cnt]

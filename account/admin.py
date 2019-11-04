@@ -1,11 +1,9 @@
-from django.contrib.admin.models import LogEntry
 from django import forms
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.forms import ReadOnlyPasswordHashField, AdminPasswordChangeForm
+from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib.admin.models import LogEntry, DELETION
-from django.urls import get_urlconf
 from django.utils.html import escape
 from django.core.urlresolvers import reverse
 
@@ -64,10 +62,6 @@ class MyUserAdmin(UserAdmin):
     # The forms to add and change user instances
     form = UserChangeForm
     add_form = UserCreationForm
-    change_password_form = AdminPasswordChangeForm
-    # The fields to be used in displaying the User model.
-    # These override the definitions on the base UserAdmin
-    # that reference specific fields on auth.User.
     list_display = ('username', 'nickname', 'email',
                     'is_active', 'is_admin', 'create_at',
                     'update_at')
@@ -150,6 +144,7 @@ class LogEntryAdmin(admin.ModelAdmin):
         prefetch_related()。
         3. 你可以在一个QuerySet中同时使用select_related()和prefetch_related()，从而减少SQL查询的次数。
         4. 只有prefetch_related()之前的select_related()是有效的，之后的将会被无视掉。
+        5. 这两个方法在存在外键的时候使用,可以减少数据库查询,提高性能
         :param request:
         :return:
         """

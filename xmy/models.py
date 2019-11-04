@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 from stdimage import StdImageField
 
 # Create your models here.
@@ -79,3 +81,20 @@ class AlbumModel(models.Model):
 
     def __str__(self):
         return '相册图片'
+
+
+@receiver([pre_delete], sender=GalleryModel)
+def delete_gallery_img(sender, instance, **kwargs):
+    """
+    删除对象时删除图片文件
+    :param sender:
+    :param instance:
+    :param kwargs:
+    :return:
+    """
+    instance.gallery_img.delete(False)
+
+
+@receiver([pre_delete], sender=AlbumModel)
+def delete_album_img(sender, instance, **kwargs):
+    instance.album_img.delete(False)
