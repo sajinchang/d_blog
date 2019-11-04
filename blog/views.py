@@ -20,18 +20,18 @@ def tag_cache(request):
     :param request:
     :return:
     """
-    tags_queryset = TagModel.objects.all()
-    tags_data = TagSerialize(instance=tags_queryset, many=True).data
-
-    category_queryset = CategoryModel.objects.all()
-    category_data = CategorySerialize(instance=category_queryset, many=True).data
-
-    rcmd_article = ArticleModel.objects.filter(article_deleted=False).order_by('article_sort')[:10]
-    article_data = ArticleSerialize(instance=rcmd_article, many=True).data
-    data = {
-        'tags_data': tags_data,
-        'category_data': category_data,
-        'rcmd_article': article_data,
-    }
+    # tags_queryset = TagModel.objects.all()
+    # tags_data = TagSerialize(instance=tags_queryset, many=True).data
+    #
+    # category_queryset = CategoryModel.objects.all()
+    # category_data = CategorySerialize(instance=category_queryset, many=True).data
+    #
+    # rcmd_article = ArticleModel.objects.filter(article_deleted=False).order_by('article_sort')[:10]
+    # article_data = ArticleSerialize(instance=rcmd_article, many=True).data
+    # data = {
+    #     'tags_data': tags_data,
+    #     'category_data': category_data,
+    #     'rcmd_article': article_data,
+    # }
     return render_json(data=data)
     # return render(request, 'show/info.html', context={'data': data})

@@ -4,6 +4,7 @@ import os
 import time
 from uuid import uuid4
 
+from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.core.paginator import InvalidPage
 from django.core.paginator import PageNotAnInteger
@@ -95,3 +96,20 @@ def split_list_n_list(origin, n):
         cnt = len(origin) // n + 1
     for i in range(n):
         yield origin[i * cnt:(i + 1) * cnt]
+
+
+def set_cache(key, time_out=5 * 60):
+    """
+    缓存装饰器
+    :param key:
+    :param time_out:
+    :return:
+    """
+    def wrapper(func):
+        def inner(*args, **kwargs):
+            res = func(*args, **kwargs)
+            cache.set(key, res, time_out)
+
+        return inner
+
+    return wrapper
