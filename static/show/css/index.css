@@ -1,6 +1,6 @@
  @charset "gb2312";
-.l_box { width: 30%; float: left }
-.r_box { width: 68%; float: right }
+.l_box { width: 20%; float: left }
+.r_box { width: 78%; float: right }
 .l_box h2 { color: #333; font-size: 14px; line-height: 30px; padding-left: 20px; background: #fff }
 .l_box div { background: rgba(255,255,255,0.5); margin-bottom: 20px; overflow: hidden }
 .l_box div ul { padding: 10px; overflow: hidden }

@@ -3,11 +3,11 @@
 
 from django.conf.urls import url
 
-from .views import GalleryView
-from .views import GalleryShowView
+from . import views
 
 
 urlpatterns = [
-    url(r'^$', GalleryView.as_view(), name='gallery'),
-    url(r'^(?P<pk>\d+)$', GalleryShowView.as_view(), name='gallery_show')
+    url(r'^$', views.GalleryView.as_view(), name='gallery'),
+    url(r'^(?P<pk>\d+)$', views.GalleryShowView.as_view(), name='gallery_show'),
+    url(r'^top$', views.GalleryTopView.as_view(), name='gallery_top'),
 ]
