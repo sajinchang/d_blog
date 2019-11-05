@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.db import models
-from django.db.models import QuerySet
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from mdeditor.fields import MDTextField
 from stdimage import StdImageField
 
+from libs.redis_cache import RankArticle
 from libs.utils import upload_dir
 
 
@@ -137,3 +137,15 @@ class ArticleModel(models.Model):
 @receiver([pre_delete], sender=ArticleModel)
 def delete_article_img(sender, instance, **kwargs):
     instance.article_img.delete(False)
+
+
+@receiver([pre_delete], sender=ArticleModel)
+def delete_rank_article(sender, instance, **kwargs):
+    """
+    文章删除时,删除缓存中的排行榜数据
+    :param sender:
+    :param instance:
+    :param kwargs:
+    :return:
+    """
+    RankArticle.del_pk(instance.pk)

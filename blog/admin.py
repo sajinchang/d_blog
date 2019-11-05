@@ -1,15 +1,12 @@
 import logging
 
-from django.db import models as d_models
 from django.contrib import admin
 from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
 
-# Register your models here.
-from mdeditor.widgets import MDEditorWidget
-
 from blog import models
 from libs import admin_action
+from libs.redis_cache import RankArticle
 
 console = logging.getLogger('django')
 
@@ -33,8 +30,9 @@ class ProxyResource(resources.ModelResource):
 @admin.register(models.ArticleModel)
 class ArticleAdmin(ImportExportActionModelAdmin):
     resources_class = ProxyResource
-    list_display = ['article_title', 'author', 'img', 'tags', 'category', 'article_deleted', 'article_sort',
-                    'article_views', 'article_create_at', 'article_update_at', 'get_status']
+    list_display = ['article_title', 'author', 'img', 'tags', 'category', 'article_deleted',
+                    'article_sort', 'article_views', 'article_create_at',
+                    'article_update_at', 'get_status']
 
     readonly_fields = ['article_views', 'user']
     # # 详细时间分层筛选　
@@ -90,6 +88,10 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         """
         if not change:
             obj.user = request.user
+        else:
+            if obj.article_deleted:
+                # 排行榜删除
+                RankArticle.del_pk(obj.pk)
         super(ArticleAdmin, self).save_model(request, obj, form, change)
 
     def delete_model(self, request, obj):
@@ -98,6 +100,8 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         """
         obj.article_deleted = True
         obj.save()
+        # 排行榜id删除
+        RankArticle.del_pk(pk=obj.pk)
 
     def get_actions(self, request):
         """

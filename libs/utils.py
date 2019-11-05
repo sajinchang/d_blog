@@ -107,8 +107,11 @@ def set_cache(key, time_out=5 * 60):
     """
     def wrapper(func):
         def inner(*args, **kwargs):
-            res = func(*args, **kwargs)
-            cache.set(key, res, time_out)
+            res = cache.get(key)
+            if not res:
+                res = func(*args, **kwargs)
+                cache.set(key, res, time_out)
+            return res
 
         return inner
 

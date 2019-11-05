@@ -37,7 +37,7 @@
         <ul>
             <li><a href="{% url 'index' %}">网站首页</a></li>
             <li><a href="{% url 'gallery' %}">我的相册</a></li>
-            <li><a href="">我的日记</a></li>
+            <li><a href="{% url 'blog:blog_list' %}">博客</a></li>
             <li><a href="">关于我</a></li>
             <li><a href="">留言</a></li>
             {#            <li><a href="">内容页</a></li>#}
@@ -64,7 +64,7 @@
     <ul>
         <li><a href="{% url 'index' %}">首页</a></li>
         <li><a href="{% url 'gallery' %}">相册</a></li>
-        <li><a href="">日记</a></li>
+        <li><a href="{% url 'blog:blog_list' %}">博客</a></li>
         <li><a href="">关于</a></li>
         <li><a href="">留言</a></li>
         {#        <li><a href="">内容页</a></li>#}

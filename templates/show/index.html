@@ -6,6 +6,7 @@
     {#    <link href="{% static 'show/css/infopic.css' %}" rel="stylesheet">#}
     <link href="{% static 'show/css/m.css' %}" rel="stylesheet">
 {% endblock %}
+
 {% block r_box %}
     <div class="r_box">
         {% for foo in data %}
@@ -18,7 +19,7 @@
         <div class="pagelist">
             <a class="allpage"><i>总页数:</i>&nbsp;&nbsp;&nbsp;<b>{{ total_page }}</b></a>&nbsp;&nbsp;
             {% if previous %}
-                <a href="{% url 'gallery:gallery' %}?page={{ previous_url }}">上一页</a>
+                <a href="{% url 'index' %}?page={{ previous_url }}">上一页</a>
             {% else %}
                 <a>上一页</a>
             {% endif %}
@@ -26,11 +27,11 @@
                 {% if foo == current_page %}
                     <a class="curPage">{{ foo }}</a>&nbsp;&nbsp;
                 {% else %}
-                    <a href="{% url 'gallery:gallery' %}?page={{ foo }}">{{ foo }}</a>&nbsp;&nbsp;
+                    <a href="{% url 'index' %}?page={{ foo }}">{{ foo }}</a>&nbsp;&nbsp;
                 {% endif %}
             {% endfor %}
             {% if next %}
-                <a href="{% url 'gallery:gallery' %}?page={{ next_url }}">下一页</a>
+                <a href="{% url 'index' %}?page={{ next_url }}">下一页</a>
             {% else %}
                 <a>下一页</a>
             {% endif %}

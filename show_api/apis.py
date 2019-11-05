@@ -20,6 +20,7 @@ class Test(BaseView):
 
 class Index(BaseView):
     """首页"""
+
     def get(self, request):
         """
         :param request:

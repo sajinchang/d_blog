@@ -3,6 +3,8 @@
 from django.core import serializers
 from django.http import HttpResponse
 
+from libs.redis_cache import RankArticle
+
 
 def export_as_json(modeladmin, request, queryset):
     """
@@ -29,6 +31,8 @@ def delete_selected_queryset(modeladmin, request, queryset):
     :return:
     """
     queryset.update(article_deleted=True)
+    # 删除文章, 排行榜id删除
+    list(map(RankArticle.del_pk, [obj.pk for obj in queryset]))
 
 
 delete_selected_queryset.short_description = '逻辑删除所选内容'
