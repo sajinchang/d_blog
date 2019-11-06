@@ -6,7 +6,7 @@ from mdeditor.fields import MDTextField
 from stdimage import StdImageField
 
 from libs.redis_cache import RankArticle
-from libs.utils import upload_dir
+from libs.utils import upload_dir, set_cache
 
 
 class TagModel(models.Model):
@@ -43,6 +43,14 @@ class CategoryModel(models.Model):
         get_latest_by = 'create_at'
         verbose_name = '分类'
         verbose_name_plural = verbose_name
+
+    @property
+    @set_cache()
+    def article_count(self):
+        if not hasattr(self, '_article_count'):
+            # self._article_count = ArticleModel.objects.filter(category=self, article_deleted=False).count()
+            self._article_count = self.category.filter(article_deleted=False).count()
+        return self._article_count
 
 
 class ArticleManager(models.Manager):
@@ -132,6 +140,39 @@ class ArticleModel(models.Model):
 
     img.short_description = '封面图片'
     img.allow_tags = True
+
+    @set_cache(60 * 60)
+    def next_article(self):
+        """
+        下一篇
+        :return:
+        """
+        obj = ArticleModel.objects.filter(id__gt=self.pk, article_deleted=False).order_by('id')
+        if obj.exists():
+            return {'id': obj.first().id, 'article_title': obj.first().article_title}
+        return {}
+
+    @set_cache(60 * 60)
+    def previous_article(self):
+        """
+        上一篇
+        :return:
+        """
+        obj = ArticleModel.objects.filter(id__lt=self.pk, article_deleted=False).order_by('-id')
+        if obj.exists():
+            return {'id': obj.first().id, 'article_title': obj.first().article_title}
+        return {}
+
+
+class ArticleLikeModel(models.Model):
+    """文章点赞数量"""
+    click_num = models.IntegerField('点赞数量', default=0)
+    article = models.OneToOneField(to=ArticleModel, verbose_name='文章', related_name='article_like')
+
+    class Meta:
+        db_table = 'tbl_article_like'
+        verbose_name = '文章点赞数量'
+        verbose_name_plural = verbose_name
 
 
 @receiver([pre_delete], sender=ArticleModel)

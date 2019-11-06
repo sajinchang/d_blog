@@ -121,7 +121,7 @@ def set_cache(expiration=5 * 60):
 
     def wrapper(func):
         def inner(*args, **kwargs):
-            key = repr((func, args, kwargs))
+            key = repr((func.__name__, args, kwargs))
             key = get_md5(key)
             res = cache.get(key)
 
@@ -134,3 +134,19 @@ def set_cache(expiration=5 * 60):
         return inner
 
     return wrapper
+
+
+def limit_verify(limit, default=10):
+    """
+    :param limit:
+    :param default:
+    :return:
+    """
+    try:
+        limit = int(limit)
+    except ValueError:
+        limit = default
+    if limit > default:
+        limit = default
+
+    return limit

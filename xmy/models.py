@@ -84,6 +84,18 @@ class AlbumModel(models.Model):
         return '相册图片'
 
 
+class GalleryLikeModel(models.Model):
+    """相册点赞数量"""
+    click_num = models.IntegerField('点赞数量', default=0)
+    gallery = models.OneToOneField(to=GalleryModel, verbose_name='相册',
+                                   related_name='gallery_like')
+
+    class Meta:
+        db_table = 'tbl_gallery_like'
+        verbose_name = '相册点赞数量'
+        verbose_name_plural = verbose_name
+
+
 @receiver([pre_delete], sender=GalleryModel)
 def delete_gallery_img(sender, instance, **kwargs):
     """

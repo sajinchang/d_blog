@@ -10,7 +10,7 @@ class CategorySerialize(serializers.ModelSerializer):
     article_count = serializers.SerializerMethodField()
 
     def get_article_count(self, obj):
-        return obj.category.filter(article_deleted=False).count()
+        return obj.article_count
 
     class Meta:
         model = models.CategoryModel
@@ -27,7 +27,9 @@ class TagSerialize(serializers.ModelSerializer):
 class ArticleSerialize(serializers.ModelSerializer):
     article_create_at = serializers.DateTimeField('%Y-%m-%d')
     category_title = serializers.CharField(source='category.category_title')
+    category_id = serializers.CharField(source='category.pk')
     nickname = serializers.CharField(source='user.nickname')
+    like_num = serializers.CharField(source='article_like.click_num')
     # tags = serializers.ManyRelatedField(child_relation=models.ArticleModel.tag)
     # tags = TagSerialize(many=True)
     tags = serializers.SerializerMethodField()

@@ -1,24 +1,32 @@
-from django.shortcuts import render
+import logging
 
-# Create your show_api here.
+from django.http import Http404
+from django.shortcuts import render
 from django.urls import reverse
 
-from blog.models import ArticleModel
+from blog.models import ArticleModel, ArticleLikeModel
+from d_blog import keys
 from libs.http import render_json
 from libs.redis_cache import RankArticle
-from libs.utils import query_page
+from libs.utils import query_page, limit_verify
 from libs.view import BaseView
 from serialize.blog_serialize import ArticleSerialize
 from . import logic
 
+err = logging.getLogger('err')
+
 
 class BlogShowView(BaseView):
     def get(self, request, pk):
-        obj = ArticleModel.objects.get(pk=pk)
+        try:
+            obj = ArticleModel.objects.get(pk=pk)
+        except ArticleModel.DoesNotExist:
+            raise Http404
         # 排行榜分数+1
         RankArticle.add_score(pk=obj.pk)
         data = ArticleSerialize(instance=obj, many=False).data
-        # return render_json(data=data)
+        data['next'] = obj.next_article()
+        data['previous'] = obj.previous_article()
         return render(request, 'show/info.html', context=data)
 
 
@@ -58,6 +66,7 @@ class CategoryTagView(BaseView):
     def get(self, request, tag_category, pk):
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
+        limit = limit_verify(limit, default=10)
         if tag_category.__eq__('tag'):
             articles = ArticleModel.objects.filter(tag__id=pk, article_deleted=False). \
                 prefetch_related('tag__tag')
@@ -80,9 +89,27 @@ class BlogView(BaseView):
     def get(self, request):
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
+        limit = limit_verify(limit, default=10)
         queryset = ArticleModel.objects.filter(article_deleted=False)
         result = query_page(pre_page=limit, pages=9, current_page=page,
                             queryset=queryset, serialize=ArticleSerialize)
         url = reverse('blog:blog_list')
         result['url'] = url
         return render(request, 'show/list.html', context=result)
+
+
+class BlogLikeView(BaseView):
+    """blog点赞视图"""
+
+    def post(self, request):
+        pk = request.POST.get('pk')
+        try:
+            obj = ArticleLikeModel.objects.get(article_id=pk)
+        except (ArticleLikeModel.DoesNotExist, ValueError) as e:
+            err.error(e)
+            return render_json(code=keys.SERVER_ERROR, msg='点赞失败')
+        else:
+            obj.click_num += 1
+            obj.save()
+
+        return render_json()

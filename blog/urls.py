@@ -10,5 +10,7 @@ urlpatterns = [
     url(r'^tag/cache$', views.tag_cache, name='tag_cache'),
     url(r'^top/article$', views.top_article, name='top_article'),
 
-    url(r'(?P<tag_category>\w*)/(?P<pk>\d+)', views.CategoryTagView.as_view(), name='category_tag'),
+    url(r'(?P<tag_category>\w*)/(?P<pk>\d+)', views.CategoryTagView.as_view(),
+        name='category_tag'),
+    url(r'^like$', views.BlogLikeView.as_view(), name='blog_like'),
 ]

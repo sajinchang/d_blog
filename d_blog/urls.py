@@ -18,6 +18,7 @@ from django.conf import settings
 from django.conf.urls import url
 from django.conf.urls import include
 from django.contrib import admin
+from django.views.generic import RedirectView
 
 from show_api import apis
 from show_api import handler_error
@@ -26,6 +27,7 @@ from xmy import views as gallery_view
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'mdeditor/', include('mdeditor.urls')),
+    # url(r'^favicon.ico/pre', RedirectView.as_view(url=r'static/show/imgs/favicon.png')),
     url(r'^test/$', apis.Test.as_view()),
 
     url(r'^$', apis.Index.as_view(), name='index'),

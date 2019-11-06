@@ -3,7 +3,6 @@
 from django.shortcuts import render
 
 from blog.models import ArticleModel
-from libs.http import render_json
 from libs.utils import query_page
 from libs.view import BaseView
 from serialize.blog_serialize import ArticleSerialize
@@ -26,7 +25,6 @@ class Index(BaseView):
         :param request:
         :return:
         """
-        print(request.user)
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
         queryset = ArticleModel.objects.filter(article_deleted=False)

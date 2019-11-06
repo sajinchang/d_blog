@@ -17,7 +17,7 @@ class AlbumSerialize(serializers.ModelSerializer):
 class GallerySerialize(serializers.ModelSerializer):
     gallery_create_at = serializers.DateTimeField('%Y-%m-%d')
     gallery_update_at = serializers.DateTimeField('%Y-%m-%d %H:%M:%S')
-
+    like_num = serializers.CharField(source='gallery_like.click_num')
     # 外键反向查询,序列化   必须指定外键 relate_name 字段和该字段一致, 否则找不到虚拟关系或者报错
     # gallery = AlbumSerialize(many=True, read_only=True, )
     gallery_count = serializers.SerializerMethodField()

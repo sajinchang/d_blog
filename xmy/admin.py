@@ -2,6 +2,8 @@ from django.contrib import admin
 from import_export.admin import ImportExportActionModelAdmin
 
 from xmy.models import AlbumModel, GalleryModel
+from .models import GalleryLikeModel
+
 
 # Register your models here.
 
@@ -13,7 +15,7 @@ class ImageInline(admin.TabularInline):
 @admin.register(GalleryModel)
 class GalleryAdmin(ImportExportActionModelAdmin):
     list_display = ['gallery_title', 'image_img', 'gallery_deleted',
-                    'gallery_create_at', 'gallery_update_at', 'get_status']
+                    'gallery_create_at', 'gallery_update_at', 'get_status', 'gallery_like_num']
     search_fields = ['gallery_title']
     date_hierarchy = 'gallery_update_at'
     list_editable = ['gallery_deleted']
@@ -21,6 +23,13 @@ class GalleryAdmin(ImportExportActionModelAdmin):
     inlines = [
         ImageInline
     ]
+
+    def save_model(self, request, obj, form, change):
+        """创建一对一点赞数"""
+
+        super().save_model(request, obj, form, change)
+        if change is False:
+            GalleryLikeModel.objects.create(gallery_id=obj.pk)
 
     def delete_model(self, request, obj):
         """
@@ -48,6 +57,11 @@ class GalleryAdmin(ImportExportActionModelAdmin):
     get_status.short_description = '当前状态'
     get_status.allow_tags = True
 
+    def gallery_like_num(self, obj):
+        return obj.gallery_like.click_num
+
+    gallery_like_num.short_description = '点赞数'
+
 
 @admin.register(AlbumModel)
 class AlbumAdmin(admin.ModelAdmin):
@@ -56,7 +70,7 @@ class AlbumAdmin(admin.ModelAdmin):
 
     search_fields = ['gallery__gallery_title']
     list_editable = ['album_deleted']
-    list_filter = ('album_deleted', )
+    list_filter = ('album_deleted',)
 
     def delete_model(self, request, obj):
         """

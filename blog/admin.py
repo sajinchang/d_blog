@@ -1,10 +1,13 @@
 import logging
 
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
 from import_export import resources
 from import_export.admin import ImportExportActionModelAdmin
 
 from blog import models
+from blog.models import ArticleLikeModel
 from libs import admin_action
 from libs.redis_cache import RankArticle
 
@@ -32,7 +35,7 @@ class ArticleAdmin(ImportExportActionModelAdmin):
     resources_class = ProxyResource
     list_display = ['article_title', 'author', 'img', 'tags', 'category', 'article_deleted',
                     'article_sort', 'article_views', 'article_create_at',
-                    'article_update_at', 'get_status']
+                    'article_update_at', 'get_status', 'article_like_num']
 
     readonly_fields = ['article_views', 'user']
     # # 详细时间分层筛选　
@@ -88,11 +91,15 @@ class ArticleAdmin(ImportExportActionModelAdmin):
         """
         if not change:
             obj.user = request.user
+
         else:
             if obj.article_deleted:
                 # 排行榜删除
                 RankArticle.del_pk(obj.pk)
         super(ArticleAdmin, self).save_model(request, obj, form, change)
+        if not change:
+            # 创建一对一点赞数
+            ArticleLikeModel.objects.create(article_id=obj.pk)
 
     def delete_model(self, request, obj):
         """
@@ -123,6 +130,19 @@ class ArticleAdmin(ImportExportActionModelAdmin):
 
     get_status.short_description = '当前状态'
     get_status.allow_tags = True
+
+    # 获取分类目录, 可以直接点击进入
+    # def link_to_category(self, obj):
+    #     info = (obj.category._meta.app_label, obj.category._meta.model_name)
+    #     link = reverse('admin:%s_%s_change' % info, args=(obj.category.pk))
+    #     return format_html('<a href="%s">%s</a>' % (link, obj.category.category_title))
+    #
+    # link_to_category.short_description = '分类目录'
+
+    def article_like_num(self, obj):
+        return obj.article_like.click_num
+
+    article_like_num.short_description = '点赞数'
 
 
 admin.site.site_header = '博客管理系统'

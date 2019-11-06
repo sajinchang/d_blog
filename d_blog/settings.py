@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'mdeditor',
     'import_export',
     'stdimage',
+    'rest_framework',
 
     'xmy',
     'blog',
@@ -220,7 +221,7 @@ LOGGING = {
     # LOGGER 配置
     'loggers': {
         'django': {
-            'handlers': ['console'],
+            'handlers': ['console', 'error'],
         },
 
         'inf': {
