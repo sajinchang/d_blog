@@ -13,6 +13,7 @@ class GalleryModel(models.Model):
     """
     gallery_title = models.CharField('标题', max_length=128, unique=True,
                                      help_text='相册标题应该是唯一的')
+    gallery_sort = models.IntegerField('排序', default=0)
     gallery_img = StdImageField(upload_to=upload_dir, blank=True, null=True,
                                 variations={'thumbnail': (100, 75)},
                                 verbose_name=u'封面图片')
@@ -27,7 +28,7 @@ class GalleryModel(models.Model):
         db_table = 'tbl_gallery'
         verbose_name = '相册'
         verbose_name_plural = verbose_name
-        ordering = ['id']
+        ordering = ['gallery_sort']
 
     def image_img(self):
         if hasattr(self.gallery_img, 'thumbnail'):

@@ -9,13 +9,14 @@ a:hover { text-decoration: none; color: #000; }
 .blank { height: 20px; overflow: hidden; width: 100%; margin: auto; clear: both }
 .f_l { float: left }
 .f_r { float: right }
-article { width: 1000px; margin: auto; overflow: hidden }
+article { width: 1200px; margin: auto; overflow: hidden }
+.l_box { width: 90px}
 .container { width: 1000px; margin: auto }
 /* header */
 header { width: 100%; overflow: hidden; }
 .logo { width: 1000px; margin: auto; font-size: 26px; padding: 10px 0 20px 0; -webkit-text-shadow: 1px 1px 1px rgba(255,255,255,.2); -moz-text-shadow: 1px 1px 1px rgba(255,255,255,.2); text-shadow: 1px 1px 1px rgba(255,255,255,.2); }
 .logo a { color: #222 }
-nav{ width: 1000px; margin: auto; overflow: hidden; padding: 0 0 20px 0 }
+nav{ width: 1200px; margin: auto; overflow: hidden; padding: 0 0 20px 0 }
 nav li { display: inline-block; float: left; padding-right:30px;text-align: center; overflow: hidden; line-height: 30px; }
 nav li a { color: #000; }
 a#selected,nav li a:hover { font-weight:bold  }

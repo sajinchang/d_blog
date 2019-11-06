@@ -3,7 +3,7 @@
 from django.http import JsonResponse
 
 
-def render_json(code=0, count=0, data=None, msg=''):
+def render_json(code=200, count=0, data=None, msg=''):
     """
     :param count:   type: int     返回数据总量
     :param code:    type: int     状态吗
