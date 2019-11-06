@@ -11,6 +11,8 @@
 {% block js-header %}
     {#    <script src="{% static 'show/js/jquery.min.js' %}" type="text/javascript"></script>#}
     <script src="{% static 'show/js/blog_show.js' %}"></script>
+    <script src="{% static 'layer/layer.js' %}"></script>
+    <script src="{% static 'show/js/like.js' %}"></script>
     {#    markdown 代码高亮#}
     {#<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>#}
     {#    <script >hljs.initHighlightingOnLoad();</script>#}
@@ -54,6 +56,15 @@
                     <p class="diggit"><a>
                         很赞哦！ </a>(<b id="diggnum">
                         {{ like_num }}
+
+                        <script>
+                            $(function () {
+                                $('#diggnum').click(function () {
+                                    click_like("{% url 'blog:blog_like' %}", {{ id }})
+                                })
+                            });
+
+                        </script>
                     </b>)
                     </p>
                 </div>

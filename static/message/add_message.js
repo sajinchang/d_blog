@@ -41,7 +41,7 @@ $(function () {
             }, function (data) {
                 data = JSON.parse(data);
                 console.log(data);
-                if (data.code == 0) {
+                if (data.code === 0) {
                     layer.msg('留言成功');
                     return false;
                 } else {

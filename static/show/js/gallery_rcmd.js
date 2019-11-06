@@ -10,7 +10,6 @@
 $(function () {
     var $gallery_top = $('#gallery-top');
     $.get('/gallery/top', {}, function (result) {
-        console.log(result);
         if (result.code !== 200){
             return false;
         }

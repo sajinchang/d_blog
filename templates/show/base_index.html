@@ -1,7 +1,7 @@
 {% extends 'show/base.html' %}
 {% load static %}
 {% block js-header %}
-{#    <script src="{% static 'show/js/jquery.min.js' %}" type="text/javascript"></script>#}
+    {#    <script src="{% static 'show/js/jquery.min.js' %}" type="text/javascript"></script>#}
 
     <script src="{% static 'show/js/blog_show.js' %}"></script>
     <script src="{% static 'show/js/gallery_rcmd.js' %}"></script>
@@ -10,12 +10,15 @@
     <article>
         <div class="l_box">
             <div class="about_me">
-                    <img src="{% static 'show/imgs/avatar.png' %}">
+                <img src="{% static 'show/imgs/avatar.png' %}">
             </div>
             <div class="wdxc">
-                <h2>我的相册</h2>
-                <ul id="gallery-top">
-                </ul>
+                {% if request.user.is_superuser %}
+                    <h2>我的相册</h2>
+                    <ul id="gallery-top">
+                    </ul>
+                {% endif %}
+
             </div>
             <div class="search">
                 <form action="" method="post" name="searchform" id="searchform">
@@ -30,21 +33,21 @@
                 </form>
             </div>
             <div class="fenlei">
-                <h2 >文章分类</h2>
+                <h2>文章分类</h2>
                 <ul id="category">
                 </ul>
             </div>
             <div class="tuijian">
-                <h2 >站长推荐</h2>
+                <h2>站长推荐</h2>
                 <ul id="rcmd_blog">
                 </ul>
             </div>
-{#            <div class="links">#}
-{#                <h2>友情链接</h2>#}
-{#                <ul>#}
-{#                    <a href="http://www.yangqq.com">杨青个人博客</a> <a href="http://www.yangqq.com">杨青博客</a>#}
-{#                </ul>#}
-{#            </div>#}
+            {#            <div class="links">#}
+            {#                <h2>友情链接</h2>#}
+            {#                <ul>#}
+            {#                    <a href="http://www.yangqq.com">杨青个人博客</a> <a href="http://www.yangqq.com">杨青博客</a>#}
+            {#                </ul>#}
+            {#            </div>#}
             <div class="guanzhu">
                 <h2>么么哒</h2>
                 <ul>

@@ -8,7 +8,7 @@ from django.views.decorators.cache import cache_page
 
 from d_blog import keys
 from d_blog.keys import LOGIN_URL
-from libs import view
+from libs import view, form
 from libs.http import render_json
 from libs import utils
 from serialize.gallery_serialize import GallerySerialize
@@ -31,7 +31,7 @@ class GalleryView(view.BaseView):
         limit = utils.limit_verify(limit, default=24)
         query_set = GalleryModel.objects.filter(gallery_deleted=False)
         result = utils.query_page(pre_page=limit, current_page=page,
-                            serialize=GallerySerialize, pages=9, queryset=query_set)
+                                  serialize=GallerySerialize, pages=9, queryset=query_set)
         result.update({'data': list(utils.split_list_n_list(result['data'], 4))})
         return render(request, 'show/share.html', context=result)
 
@@ -66,14 +66,17 @@ class GalleryLikeView(view.BaseView):
     """相册点赞视图"""
 
     def post(self, request):
-        pk = request.POST.get('pk')
-        try:
-            obj = GalleryLikeModel.objects.get(gallery_id=pk)
-        except (GalleryLikeModel.DoesNotExist, ValueError) as e:
-            err.error(e)
-            return render_json(code=keys.SERVER_ERROR, msg='点赞失败')
-        else:
-            obj.click_num += 1
-            obj.save()
+        f = form.LikeForm(request.POST)
+        if f.is_valid():
 
-        return render_json()
+            try:
+                obj = GalleryLikeModel.objects.get(gallery_id=f.cleaned_data['pk'])
+            except (GalleryLikeModel.DoesNotExist, ValueError) as e:
+                err.error(e)
+                return render_json(code=keys.SERVER_ERROR, msg='点赞失败')
+            else:
+                obj.click_num += 1
+                obj.save()
+
+            return render_json()
+        return render_json(code=keys.FORM_ERROR, msg=f.errors)

@@ -6,6 +6,7 @@ from django.urls import reverse
 
 from blog.models import ArticleModel, ArticleLikeModel
 from d_blog import keys
+from libs import form
 from libs.http import render_json
 from libs.redis_cache import RankArticle
 from libs.utils import query_page, limit_verify
@@ -102,14 +103,16 @@ class BlogLikeView(BaseView):
     """blog点赞视图"""
 
     def post(self, request):
-        pk = request.POST.get('pk')
-        try:
-            obj = ArticleLikeModel.objects.get(article_id=pk)
-        except (ArticleLikeModel.DoesNotExist, ValueError) as e:
-            err.error(e)
-            return render_json(code=keys.SERVER_ERROR, msg='点赞失败')
-        else:
-            obj.click_num += 1
-            obj.save()
+        f = form.LikeForm(request.POST)
+        if f.is_valid():
+            try:
+                obj = ArticleLikeModel.objects.get(article_id=f.cleaned_data['pk'])
+            except (ArticleLikeModel.DoesNotExist, ValueError) as e:
+                err.error(e)
+                return render_json(code=keys.SERVER_ERROR, msg='点赞失败')
+            else:
+                obj.click_num += 1
+                obj.save()
 
-        return render_json()
+            return render_json()
+        return render_json(code=keys.FORM_ERROR, msg=f.errors)

@@ -72,7 +72,7 @@ class ArticleModel(models.Model):
     article_title = models.CharField('博客标题', max_length=128, unique=True)
     user = models.ForeignKey(to=settings.AUTH_USER_MODEL, verbose_name='所属用户')
     category = models.ForeignKey(to=CategoryModel, verbose_name='所属分类',
-                                 null=True, blank=True,
+                                 blank=False, null=True,
                                  related_name='category',
                                  on_delete=models.SET_NULL)
     tag = models.ManyToManyField(to=TagModel, verbose_name='所属标签', related_name='tag')
