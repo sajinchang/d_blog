@@ -55,11 +55,12 @@ class CategoryTagView(BaseView):
     根据分类获取blog
     """
 
-    def get(self, request,tag_category, pk):
+    def get(self, request, tag_category, pk):
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
         if tag_category.__eq__('tag'):
-            articles = ArticleModel.objects.filter(tag__id=pk, article_deleted=False).prefetch_related('tag__tag')
+            articles = ArticleModel.objects.filter(tag__id=pk, article_deleted=False). \
+                prefetch_related('tag__tag')
         elif tag_category.__eq__('category'):
             articles = ArticleModel.objects.filter(category_id=pk, article_deleted=False)
         else:

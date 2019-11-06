@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author  : SamSa
-from django.conf import settings
-
 from blog import models
 from libs.utils import set_cache
 from serialize import blog_serialize
 
 
-@set_cache(key='%s-%s' % (settings.SECRET_KEY, 'get_category_cache'))
+@set_cache()
 def get_category_cache():
     """
     获取分类缓存
@@ -19,7 +17,7 @@ def get_category_cache():
     return category_data
 
 
-@set_cache(key='%s-%s' % (settings.SECRET_KEY, 'get_tag_cache'))
+@set_cache()
 def get_tag_cache():
     """
     获取标签云缓存
@@ -30,7 +28,7 @@ def get_tag_cache():
     return tags_data
 
 
-@set_cache(key='%s-%s' % (settings.SECRET_KEY, 'get_rcmd_article_cache'))
+@set_cache()
 def get_rcmd_article():
     """
     获取推荐文章缓存

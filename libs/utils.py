@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 # @Author  : SamSa
+import logging
 import os
 import time
 from uuid import uuid4
+from hashlib import md5
 
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.core.paginator import InvalidPage
 from django.core.paginator import PageNotAnInteger
 from django.core.paginator import EmptyPage
+
+inf = logging.getLogger('inf')
 
 
 def upload_dir(instance, file):
@@ -98,19 +102,33 @@ def split_list_n_list(origin, n):
         yield origin[i * cnt:(i + 1) * cnt]
 
 
-def set_cache(key, time_out=5 * 60):
+def get_md5(string):
     """
-    缓存装饰器
-    :param key:
-    :param time_out:
+    获取md5值
+    :param string:
     :return:
     """
+    m = md5(string.encode('utf8'))
+    return m.hexdigest()
+
+
+def set_cache(expiration=5 * 60):
+    """
+    缓存装饰器
+    :param expiration: 过期时间
+    :return:
+    """
+
     def wrapper(func):
         def inner(*args, **kwargs):
+            key = repr((func, args, kwargs))
+            key = get_md5(key)
             res = cache.get(key)
+
             if not res:
                 res = func(*args, **kwargs)
-                cache.set(key, res, time_out)
+                cache.set(key, res, expiration)
+                inf.info('cache_decorator get cache:%s key:%s' % (func.__name__, key))
             return res
 
         return inner

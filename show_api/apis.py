@@ -26,6 +26,7 @@ class Index(BaseView):
         :param request:
         :return:
         """
+        print(request.user)
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
         queryset = ArticleModel.objects.filter(article_deleted=False)
