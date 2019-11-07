@@ -1,0 +1,5 @@
+{{ object.article_title }}
+{{ object.category.category_title }}
+{{ object.tag.tag_title }}
+{{ object.article_commend }}
+{{ object.article_content }}

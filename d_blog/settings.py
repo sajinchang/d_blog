@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'import_export',
     'stdimage',
     'rest_framework',
+    'haystack',
 
     'xmy',
     'blog',
@@ -319,3 +320,12 @@ REDIS = {
 #         'rest_framework.authentication.TokenAuthentication',
 #     )
 # }
+
+# Automatically update searching index
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_cn_backend.WhooshEngine',
+        'PATH': os.path.join(BASE_DIR, 'whoosh_index'),
+    }
+}

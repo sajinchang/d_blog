@@ -17,6 +17,8 @@ function click_like(url, id) {
     })
 }
 
+
+// 解决403csrf问题
 $(document).ajaxSend(function (event, xhr, settings) {
     function getCookie(name) {
         var cookieValue = null;
