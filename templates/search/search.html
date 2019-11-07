@@ -1,27 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-{% if query %}
-    <h3>搜索结果如下：</h3>
-    {% for result in page.object_list %}
-        <a href="/{{ result.object.id }}/">{{ result.object.gName }}</a><br/>
-    {% empty %}
-        <p>啥也没找到</p>
-    {% endfor %}
+{% extends 'show/base.html' %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'show/css/m.css' %}" rel="stylesheet">
+{% endblock %}
+{% block js-header %}
+    {#    <script src="{% static 'show/js/jquery.min.js' %}" type="text/javascript"></script>#}
+    <script src="{% static 'show/js/blog_show.js' %}"></script>
+{% endblock %}
+{% block content %}
+    <article>
+        {% include 'show/blog_left_box.html' %}
+        <div class="r_box">
+            {% for foo in page %}
+                <li><i><a href="{% url 'blog:blog_show' foo.object.id %}">
+                    <img src="{{ foo.article_img }}"></a></i>
+                    <h3><a href="{% url 'blog:blog_show' foo.object.id %}">{{ foo.object.article_title }}</a></h3>
+                    <p>{{ foo.object.article_commend }}</p>
+                </li>
+            {% endfor %}
 
-    {% if page.has_previous or page.has_next %}
-        <div>
-            {% if page.has_previous %}
-                <a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; 上一页
-            {% if page.has_previous %}</a>{% endif %}
-            |
-            {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}下一页 &raquo;
-            {% if page.has_next %}</a>{% endif %}
+            <div class="pagelist">
+
+                <a class="allpage"><i>总页数:</i>&nbsp;&nbsp;&nbsp;<b>{{ paginator.num_pages }}</b></a>&nbsp;&nbsp;
+                {% if page.has_previous %}
+                    <a href="{% url 'haystack_search' %}?page={{ page.previous_page_number }}&q={{ query }}">上一页</a>
+                {% else %}
+                    <a>上一页</a>
+                {% endif %}
+                {% for foo in paginator.page_range %}
+                    {% if foo == page.number %}
+                        <a class="curPage">{{ page.number }}</a>&nbsp;&nbsp;
+                    {% else %}
+                        <a href="{% url 'haystack_search' %}?page={{ foo }}&q={{ query }}">{{ foo }}</a>&nbsp;&nbsp;
+                    {% endif %}
+                {% endfor %}
+                {% if page.has_next %}
+                    <a href="{% url 'haystack_search' %}?page={{ page.next_page_number }}&q={{ query }}">下一页</a>
+                {% else %}
+                    <a>下一页</a>
+                {% endif %}
+            </div>
         </div>
-    {% endif %}
-{% endif %}
-</body>
-</html>
+    </article>
+{% endblock %}
+
+
+
