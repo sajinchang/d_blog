@@ -3,3 +3,5 @@
 {{ object.tag.tag_title }}
 {{ object.article_commend }}
 {{ object.article_content }}
+{{ object.user.username}}
+{{ object.user.nickname }}

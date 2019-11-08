@@ -7,10 +7,10 @@ from .models import ArticleModel
 
 
 class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
-   text = indexes.CharField(document=True, use_template=True)
+    text = indexes.CharField(document=True, use_template=True)
 
-   def get_model(self):
-       return ArticleModel
+    def get_model(self):
+        return ArticleModel
 
-   def get_queryset(self, using=None):
-       return self.get_model().objects.filter(article_deleted=False)
+    def index_queryset(self, using=None):
+        return self.get_model().objects.filter(article_deleted=False)

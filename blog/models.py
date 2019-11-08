@@ -4,6 +4,8 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from mdeditor.fields import MDTextField
 from stdimage import StdImageField
+from mptt.models import MPTTModel
+from mptt.models import TreeForeignKey
 
 from libs.redis_cache import RankArticle
 from libs.utils import upload_dir, set_cache
@@ -173,6 +175,24 @@ class ArticleLikeModel(models.Model):
         db_table = 'tbl_article_like'
         verbose_name = '文章点赞数量'
         verbose_name_plural = verbose_name
+
+
+class CommentModel(MPTTModel):
+    article = models.ForeignKey(ArticleModel, verbose_name='博客', on_delete=models.CASCADE)
+    parent = TreeForeignKey('self', verbose_name='父级评论', related_name='children')
+
+    info = models.TextField('评论内容')
+    deleted = models.BooleanField('是否删除', choices=((True, '删除'), (False, '不删除')),
+                                  default=False)
+    create_at = models.DateTimeField('添加时间', auto_now_add=True)
+
+    class Meta:
+        db_table = 'tbl_comment'
+        verbose_name = '评论'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return '评论'
 
 
 @receiver([pre_delete], sender=ArticleModel)
