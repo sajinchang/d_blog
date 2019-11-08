@@ -27,7 +27,7 @@ from xmy import views as gallery_view
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^search/', include('haystack.urls')),
-    url(r'mdeditor/', include('mdeditor.urls')),
+    url(r'^mdeditor/', include('mdeditor.urls')),
     # url(r'^favicon.ico', RedirectView.as_view(url=r'static/show/imgs/favicon.png')),
     url(r'^test/$', apis.Test.as_view()),
 

@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'stdimage',
     'rest_framework',
     'haystack',
-
     'xmy',
     'blog',
     'account',
