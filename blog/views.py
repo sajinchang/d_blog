@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 
+from blog.form import CommentForm
 from blog.models import ArticleModel, ArticleLikeModel
 from d_blog import keys
 from libs import form
@@ -116,3 +117,21 @@ class BlogLikeView(BaseView):
 
             return render_json()
         return render_json(code=keys.FORM_ERROR, msg=f.errors)
+
+
+class CommentView(BaseView):
+    """博客评论"""
+
+    def post(self, request):
+        """
+        添加评论
+        :param request:
+        :return:
+        """
+        print(111111111)
+        obj = CommentForm(request.POST)
+        if obj.is_valid():
+            print(111111)
+            obj.save(commit=True)
+            return render_json()
+        return render_json(msg=obj.errors)

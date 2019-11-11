@@ -178,10 +178,13 @@ class ArticleLikeModel(models.Model):
 
 
 class CommentModel(MPTTModel):
-    article = models.ForeignKey(ArticleModel, verbose_name='博客', on_delete=models.CASCADE)
-    parent = TreeForeignKey('self', verbose_name='父级评论', related_name='children')
+    article = models.ForeignKey(ArticleModel, verbose_name='博客', related_name='comment',
+                                on_delete=models.CASCADE)
+    parent = TreeForeignKey('self', verbose_name='父级评论', related_name='children', blank=True,
+                            null=True)
 
     info = models.TextField('评论内容')
+    email = models.EmailField('邮箱', null=True, blank=True)
     deleted = models.BooleanField('是否删除', choices=((True, '删除'), (False, '不删除')),
                                   default=False)
     create_at = models.DateTimeField('添加时间', auto_now_add=True)
