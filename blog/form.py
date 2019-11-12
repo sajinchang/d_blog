@@ -3,7 +3,7 @@
 
 from django import forms
 
-from blog.models import CommentModel
+from blog.models import CommentModel, ArticleModel
 
 
 class CommentForm(forms.ModelForm):
@@ -15,6 +15,6 @@ class CommentForm(forms.ModelForm):
             'article', 'parent', 'info', 'email'
         ]
         error_messages = {
-            'article': {'required': '文章不可以为空'},
+            # 'article': {'required': '文章不可以为空'},
             'info': {'required': '评论内容不能为空'}
         }

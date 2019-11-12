@@ -165,6 +165,11 @@ class ArticleModel(models.Model):
             return {'id': obj.first().id, 'article_title': obj.first().article_title}
         return {}
 
+    @set_cache(5 * 60)
+    def comment(self):
+        queryset = CommentModel.objects._mptt_filter(article=self, deleted=False)
+        return queryset
+
 
 class ArticleLikeModel(models.Model):
     """文章点赞数量"""

@@ -29,6 +29,7 @@ class BlogShowView(BaseView):
         data = ArticleSerialize(instance=obj, many=False).data
         data['next'] = obj.next_article()
         data['previous'] = obj.previous_article()
+        # return render_json(data=data)
         return render(request, 'show/info.html', context=data)
 
 
@@ -128,10 +129,8 @@ class CommentView(BaseView):
         :param request:
         :return:
         """
-        print(111111111)
         obj = CommentForm(request.POST)
         if obj.is_valid():
-            print(111111)
             obj.save(commit=True)
             return render_json()
-        return render_json(msg=obj.errors)
+        return render_json(code=keys.COMMENT_ERROR, msg=obj.errors)

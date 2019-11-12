@@ -124,10 +124,12 @@ def set_cache(expiration=5 * 60):
             key = repr((func.__name__, args, kwargs))
             key = get_md5(key)
             res = cache.get(key)
-
+            print(res)
             if not res:
                 res = func(*args, **kwargs)
                 cache.set(key, res, expiration)
+                print(key)
+
                 inf.info('cache_decorator get cache:%s key:%s' % (func.__name__, key))
             return res
 
