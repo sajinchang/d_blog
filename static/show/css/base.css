@@ -9,7 +9,7 @@ a:hover { text-decoration: none; color: #000; }
 .blank { height: 20px; overflow: hidden; width: 100%; margin: auto; clear: both }
 .f_l { float: left }
 .f_r { float: right }
-article { width: 1200px; margin: auto; overflow: hidden }
+article { width: 90%; margin: auto; overflow: hidden }
 .l_box { width: 90px}
 .container { width: 1000px; margin: auto }
 /* header */
