@@ -5,15 +5,22 @@
     <link href="{% static 'show/css/info.css' %}" rel="stylesheet">
     <link href="{% static 'show/css/m.css' %}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/pygments-css/autumn.css' %}">
+    <link rel="stylesheet" href="{% static 'layui/css/layui.css' %}">
+    <style>
+    .gbko img{
+        width: 20px;
+        height: 20px;
+    }
+    </style>
     {#    <link href="http://cdn.bootcss.com/highlight.js/8.0/styles/monokai_sublime.min.css" rel="stylesheet">#}
 {% endblock %}
 
 {% block js-header %}
     {#    <script src="{% static 'show/js/jquery.min.js' %}" type="text/javascript"></script>#}
     <script src="{% static 'show/js/blog_show.js' %}"></script>
-    <script src="{% static 'layer/layer.js' %}"></script>
+    <script src="{% static 'layui/layui.js' %}"></script>
     <script src="{% static 'show/js/like.js' %}"></script>
-{#    <script src="/static/tiny_mce/tiny_mce.js"></script>#}
+    {#    <script src="/static/tiny_mce/tiny_mce.js"></script>#}
     {#    markdown 代码高亮#}
     {#<script src="http://cdn.bootcss.com/highlight.js/8.0/highlight.min.js"></script>#}
     {#    <script >hljs.initHighlightingOnLoad();</script>#}
@@ -23,7 +30,7 @@
         {% include 'show/blog_left_box.html' %}
         <div class="infosbox">
             <div class="newsview">
-                <h3 class="news_title">{{ article_title }}</h3>
+                <h3 class="news_title" id="article_id" article_id="{{ id }}">{{ article_title }}</h3>
                 <div class="bloginfo">
                     <ul>
                         <li class="author">作者：<a>{{ nickname }}</a></li>
@@ -54,13 +61,13 @@
 
                 </div>
                 <div class="share">
-                    <p class="diggit"><a>
+                    <p class="diggit" id="diggit"><a>
                         很赞哦！ </a>(<b id="diggnum">
                         {{ like_num }}
 
                         <script>
                             $(function () {
-                                $('#diggnum').click(function () {
+                                $('#diggit').click(function () {
                                     click_like("{% url 'blog:blog_like' %}", {{ id }})
                                 })
                             });
@@ -83,19 +90,52 @@
                 <div class="news_pl">
                     <h2>文章评论</h2>
                     <ul>
-                        {#                        <div class="gbko">#}
-                        {#                            @Sam: <span>11111</span>#}
-                        {#                        </div>#}
-                        {#                        <div class="gbko">#}
-                        {#                             @Sam: <span>11111dsaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa#}
-                        {#                            aaaaaaaaaaaaaaaaaa</span>#}
-                        {#                        </div>#}
-                        {#                        <div class="gbko">#}
-                        {#                             @Sam: <span>11111</span>#}
-                        {#                        </div>#}
+                        {% for foo in comment %}
+                            <li>
+                                <div class="gbko">
+                                    ##{{ foo.create_at }}: <p style="text-indent: 50px">{{ foo.info | safe }}</p>
+                                    <a class="layui-badge-rim reply" style="cursor:pointer" id="1">回复</a>
+                                </div>
+                            </li>
+                        {% endfor %}
                     </ul>
+
+                    <br>
+                    <hr>
+                    <button class="layui-btn" id="comment-on">评论</button>
+
                 </div>
             </div>
         </div>
     </article>
+
+    <form class="layui-form" lay-filter="comment-form" id="comment-form" style="display: none">
+        <hr>
+        <div class="layui-form-item">
+            <label class="layui-form-label">回复邮箱</label>
+            <div class="layui-input-inline">
+                <input type="text" name="email" placeholder="请输入邮箱" lay-verify="email"
+                       autocomplete="off"
+                       class="layui-input">
+            </div>
+        </div>
+        <hr>
+        <div class="layui-form-text">
+            <label class="layui-form-label">留言内容</label>
+            <div class="layui-input-block">
+                                <textarea placeholder="请输入内容"
+                                          style="height: 200px" name="info" class="layui-textarea"
+                                          id="layui-edit"></textarea>
+            </div>
+        </div>
+        <br>
+        <div class="layui-form-item">
+            <button class="layui-btn" lay-submit="" lay-filter="comment"
+                    type="button" style="float: right; margin-right: 20px">提交
+            </button>
+        </div>
+    </form>
+    <script src="{% static 'show/js/comment.js' %}">
+
+    </script>
 {% endblock %}

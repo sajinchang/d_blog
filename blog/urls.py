@@ -13,4 +13,5 @@ urlpatterns = [
     url(r'(?P<tag_category>\w*)/(?P<pk>\d+)', views.CategoryTagView.as_view(),
         name='category_tag'),
     url(r'^like$', views.BlogLikeView.as_view(), name='blog_like'),
+    url(r'^comment$', views.CommentView.as_view(), name='comment'),
 ]

@@ -3,6 +3,7 @@
 
 from rest_framework import serializers
 from blog import models
+from blog.models import CommentModel
 from libs.blog_tags import markdown_detail
 
 
@@ -18,9 +19,16 @@ class CategorySerialize(serializers.ModelSerializer):
 
 
 class TagSerialize(serializers.ModelSerializer):
-
     class Meta:
         model = models.TagModel
+        fields = '__all__'
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    create_at = serializers.DateTimeField('%Y-%m-%d %H:%M')
+
+    class Meta:
+        model = CommentModel
         fields = '__all__'
 
 
@@ -30,6 +38,7 @@ class ArticleSerialize(serializers.ModelSerializer):
     category_id = serializers.CharField(source='category.pk')
     nickname = serializers.CharField(source='user.nickname')
     like_num = serializers.CharField(source='article_like.click_num')
+    comment = serializers.SerializerMethodField()
     # tags = serializers.ManyRelatedField(child_relation=models.ArticleModel.tag)
     # tags = TagSerialize(many=True)
     tags = serializers.SerializerMethodField()
@@ -41,6 +50,9 @@ class ArticleSerialize(serializers.ModelSerializer):
 
     def get_tags(self, obj):
         return TagSerialize(instance=obj.tag, many=True).data
+
+    def get_comment(self, obj):
+        return CommentSerializer(instance=obj.comment, many=True).data
 
     class Meta:
         model = models.ArticleModel

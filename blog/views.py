@@ -4,6 +4,7 @@ from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
 
+from blog.form import CommentForm
 from blog.models import ArticleModel, ArticleLikeModel
 from d_blog import keys
 from libs import form
@@ -28,6 +29,7 @@ class BlogShowView(BaseView):
         data = ArticleSerialize(instance=obj, many=False).data
         data['next'] = obj.next_article()
         data['previous'] = obj.previous_article()
+        # return render_json(data=data)
         return render(request, 'show/info.html', context=data)
 
 
@@ -116,3 +118,19 @@ class BlogLikeView(BaseView):
 
             return render_json()
         return render_json(code=keys.FORM_ERROR, msg=f.errors)
+
+
+class CommentView(BaseView):
+    """博客评论"""
+
+    def post(self, request):
+        """
+        添加评论
+        :param request:
+        :return:
+        """
+        obj = CommentForm(request.POST)
+        if obj.is_valid():
+            obj.save(commit=True)
+            return render_json()
+        return render_json(code=keys.COMMENT_ERROR, msg=obj.errors)

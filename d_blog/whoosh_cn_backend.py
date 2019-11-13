@@ -38,7 +38,8 @@ if not hasattr(whoosh, '__version__') or whoosh.__version__ < (2, 5, 0):
 from whoosh import index
 from whoosh.analysis import StemmingAnalyzer
 from whoosh.fields import ID as WHOOSH_ID
-from whoosh.fields import BOOLEAN, DATETIME, IDLIST, KEYWORD, NGRAM, NGRAMWORDS, NUMERIC, Schema, TEXT
+from whoosh.fields import BOOLEAN, DATETIME, IDLIST, KEYWORD, NGRAM, NGRAMWORDS, \
+    NUMERIC, Schema, TEXT
 from whoosh.filedb.filestore import FileStorage, RamStorage
 from whoosh.highlight import highlight as whoosh_highlight
 from whoosh.highlight import ContextFragmenter, HtmlFormatter
@@ -911,7 +912,6 @@ class WhooshSearchQuery(BaseSearchQuery):
                 query_frag = "(%s)" % query_frag
 
         return u"%s%s" % (index_fieldname, query_frag)
-
 
         # if not filter_type in ('in', 'range'):
         #     # 'in' is a bit of a special case, as we don't want to

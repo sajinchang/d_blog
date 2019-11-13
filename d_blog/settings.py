@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+import conf
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -95,7 +96,7 @@ DATABASES = {
         'NAME': 'blog',
         'HOST': 'localhost',
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': '123456' if DEBUG else conf.DB.get('PASSWORD'),
         'PORT': 3306,
     }
 }
@@ -143,13 +144,15 @@ STATICFILES_DIRS = [
 ]
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/upload')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/upload') if DEBUG else conf.MEDIA_ROOT
 MEDIA_URL = '/media/upload/'
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://{}:{}/{}'.format('127.0.0.1', '6379', '1'),
+        'LOCATION': 'redis://{}:{}/{}'.format(conf.REDIS.get('HOST'),
+                                              conf.REDIS.get('PORT'),
+                                              conf.REDIS.get('DB')),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {'max_connections': 100},
