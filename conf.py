@@ -1,22 +1,21 @@
 # -*- coding: utf8 -*-
 # @Author: SamSa
 
-LOG_DIR = '/app/d_blog/logs'
+LOG_DIR = '/app/log/d_blog/'
 
 MEDIA_ROOT = '/app/d_blog/media/upload'
 
 # [MYSQL]
 DB = {
-    'USER': 'root',
+    'USER': 'blog',
     'PORT': 3306,
     'NAME': 'blog',
     'PASSWORD': '123456',
-    'HOST': '127.0.0.1'
+    'HOST': 'db'
 }
 
 # [REDIS]
 REDIS = {
-    'HOST': '127.0.0.1',
-    'DB': '1',
+    'HOST': 'redis',
     'PORT': 6379
 }

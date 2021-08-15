@@ -1,0 +1,68 @@
+version: "3"
+
+# docker-compose --env-file .env build
+# 
+volumes: 
+  d_blog_db_vol:
+  d_blog_redis_vol:
+  d_blog_media_vol:
+  d_blog_log_vol:
+
+services:
+  redis: 
+    image: redis:5
+    command: redis-server /etc/redis/redis.conf
+    volumes: 
+      - ${PROJECT_NAME}_redis_vol:/data
+      - ./compose/redis/conf/redis.conf:/etc/redis/redis.conf
+    ports: 
+      - 16379:6379
+    restart: always #always表容器运行发生错误时一直重启
+
+  db:
+    image: mysql:5.7
+    environment: 
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PWD}
+      - MYSQL_DATABASE=blog
+      - MYSQL_USER=blog
+      - MYSQL_PASSWORD=${DB_BLOG_PWD}
+    volumes: 
+      - ${PROJECT_NAME}_db_vol:/var/lib/mysql:rw
+      - ./compose/mysql/conf/my.conf:/etc/my.conf
+      - ./compose/mysql/init:/docker-entrypoint-initdb.d/ # 挂载数据初始化sql脚本
+    ports: 
+      - 13306:3306
+    restart: always
+
+  web:
+    build: .
+    expose: 
+      - 8001
+    volumes: 
+      # - /apps/code/${PROJECT_NAME}:/apps/code/${PROJECT_NAME} # 挂载项目代码
+      - ${PROJECT_NAME}_media_vol:/app/${PROJECT_NAME}/media/upload # 以数据卷挂载容器内用户上传媒体文件
+      - ${PROJECT_NAME}_log_vol:/app/${PROJECT_NAME}/logs
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DEBUG=False
+    restart: always
+    tty: true
+    stdin_open: true
+
+  nginx:
+    build: ./compose/nginx
+    ports: 
+      - 8080:8080
+      - 443:443
+    expose: 
+      - 8080
+    volumes:
+      - /app/log/${PROJECT_NAME}/nginx/:/var/log/nginx
+    depends_on:
+      - web
+
+    restart: always
+
+    

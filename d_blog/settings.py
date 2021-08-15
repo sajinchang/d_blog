@@ -93,11 +93,11 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'blog',
-        'HOST': 'localhost',
-        'USER': 'root',
+        'NAME': conf.DB.get('NAME'),
+        'HOST': conf.DB.get('HOST'),
+        'USER': conf.DB.get('USER'),
         'PASSWORD': '123456' if DEBUG else conf.DB.get('PASSWORD'),
-        'PORT': 3306,
+        'PORT': conf.DB.get('PORT'),
     }
 }
 
@@ -137,22 +137,22 @@ USE_TZ = False
 
 
 # 静态文件迁移目录
-# STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # django访问静态文件目录
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'static'),
+# ]
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/upload') if DEBUG else conf.MEDIA_ROOT
+MEDIA_ROOT = os.path.join(
+    BASE_DIR, 'media/upload') if DEBUG else conf.MEDIA_ROOT
 MEDIA_URL = '/media/upload/'
 
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://{}:{}/{}'.format(conf.REDIS.get('HOST'),
-                                              conf.REDIS.get('PORT'),
-                                              conf.REDIS.get('DB')),
+        'LOCATION': 'redis://{}:{}/1'.format(conf.REDIS.get('HOST'),
+                                             conf.REDIS.get('PORT')),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
             'CONNECTION_POOL_KWARGS': {'max_connections': 100},
@@ -192,7 +192,7 @@ LOGGING = {
         },
         'info': {
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': f'log/info.log',
+            'filename': f'{conf.LOG_DIR}/run_info.log',
             'when': 'D',  # 每天切割日志
             'backupCount': 5,  # 日志保留5天
             'formatter': 'simple',
@@ -200,7 +200,7 @@ LOGGING = {
         },
         'error': {
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': f'log/error.log',
+            'filename': f'{conf.LOG_DIR}/run_error.log',
             'when': 'W0',
             'backupCount': 4,
             'formatter': 'verbose',
@@ -208,7 +208,7 @@ LOGGING = {
         },
         'warning': {
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': f'log/warning.log',
+            'filename': f'{conf.LOG_DIR}/run_warning.log',
             'when': 'D',
             'backupCount': 15,
             'formatter': 'verbose',
@@ -269,7 +269,7 @@ CORS_ALLOW_HEADERS = (
 )
 
 # simpleui 配置
-# simpleui隐藏服务器信息    
+# simpleui隐藏服务器信息
 SIMPLEUI_HOME_INFO = False
 # 关闭默认图标
 SIMPLEUI_DEFAULT_ICON = False
@@ -303,7 +303,7 @@ SIMPLEUI_HOME_ICON = 'el-icon-date'
 SIMPLEUI_ANALYSIS = True
 # simpleui 自定义菜单
 # SIMPLEUI_CONFIG = {
-# 
+#
 # }
 # 评论 far fa-comments
 # 指定simpleui 是否以脱机模式加载静态资源，为True的时候将默认从本地读取所有资源，即使没有联网一样可以。适合内网项目
@@ -312,9 +312,9 @@ SIMPLEUI_STATIC_OFFLINE = True
 
 # redis
 REDIS = {
-    'host': '127.0.0.1',
-    'port': 6379,
-    'db': 1
+    'host': conf.REDIS.get('HOST'),
+    'port':  conf.REDIS.get('PORT'),
+    'db':  '2'
 }
 
 # REST_FRAMEWORK = {
