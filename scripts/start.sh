@@ -8,5 +8,5 @@
 # cd $PROJECT_DIR
 
 # gunicorn -c d_blog/gunicorn_config.py d_blog.wsgi
-
-uwsgi --ini ../uwsgi.ini
+cd ../
+uwsgi --ini uwsgi.ini

@@ -1,7 +1,7 @@
 version: "3"
 
 # docker-compose --env-file .env build
-# 
+# docker-compose --env-file .env up -d
 volumes: 
   d_blog_db_vol:
   d_blog_redis_vol:
@@ -42,6 +42,7 @@ services:
       # - /apps/code/${PROJECT_NAME}:/apps/code/${PROJECT_NAME} # 挂载项目代码
       - ${PROJECT_NAME}_media_vol:/app/${PROJECT_NAME}/media/upload # 以数据卷挂载容器内用户上传媒体文件
       - ${PROJECT_NAME}_log_vol:/app/${PROJECT_NAME}/logs
+      - /apps/code/${PROJECT_NAME}:/apps/code/${PROJECT_NAME}
     depends_on:
       - db
       - redis
@@ -60,6 +61,8 @@ services:
       - 8080
     volumes:
       - /app/log/${PROJECT_NAME}/nginx/:/var/log/nginx
+      - /apps/code/${PROJECT_NAME}:/apps/code/${PROJECT_NAME}
+      - ${PROJECT_NAME}_media_vol:/app/${PROJECT_NAME}/media/upload
     depends_on:
       - web
 
